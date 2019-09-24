@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/19 17:56:13 by vsanta            #+#    #+#             */
-/*   Updated: 2019/09/23 17:56:27 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/09/24 16:27:58 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,15 @@
 #ifndef ASM_H
 # define ASM_H
 
+#define LINE_EMPTY 10
+#define LINE_COMMENT 20
+#define LINE_CMD_NAME 30
+#define LINE_CMD_COM 40
+#define LINE_INSTRUCTION 50
+#define LINE_LABEL 60
 
-#define EMPTY_LINE 10;
-#define COMMENT_LINE 20;
+#define CMD_BRACKETS '"'
+
  
 typedef struct	s_asm
 {
