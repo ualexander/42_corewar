@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 17:02:54 by vsanta            #+#    #+#             */
-/*   Updated: 2019/09/24 18:44:15 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/09/24 20:39:16 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,10 +106,24 @@ int get_line_type(char *line)
 	return (0);
 }
 
-// int get_name(t_asm *asemb)
-// {
+int ft_get_char_i(char *str, char c)
+{
+	int i;
 
-// }
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == c)
+			return (i);
+		i++;
+	}
+	return (-1);
+}
+
+int get_name(t_asm *asemb)
+{
+	
+}
 
 int parse_file(t_asm *asemb)
 {
@@ -122,10 +136,8 @@ int parse_file(t_asm *asemb)
 	{
 		if (line_type == 0)
 			line_type = get_line_type(asemb->parse_line);
-
-
-
-	
+		if (line_type == LINE_CMD_NAME)
+			line_type = get_name(asemb);
 		// printf("%i | %i\n", i, get_line_type(asemb->parse_line));
 		// i++;
 	}
