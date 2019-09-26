@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/19 17:56:13 by vsanta            #+#    #+#             */
-/*   Updated: 2019/09/24 17:19:15 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/09/26 16:31:36 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,16 @@
 #define LINE_EMPTY 10
 #define LINE_COMMENT 20
 #define LINE_CMD_NAME 30
-#define LINE_CMD_COM 40
+#define LINE_CMD_COMMENT 40
 #define LINE_INST 50
 #define LINE_INST_LABEL 60
 
 #define CMD_BRACKETS '"'
+#define SPACE_SYMBOLS " \t"
 #define CMD_NUMBERS 16
 
- 
+int get_line_type(char *line);
+
 typedef struct	s_asm
 {
 	int		fd;
@@ -77,56 +79,23 @@ typedef struct	s_op
 	char		t_dir_size;
 }				t_op;
 
-
 static t_op		g_op[16] = {
-	{
-		"live", 1, 1, 0, {T_DIR, 0, 0}, 4
-	},
-	{
-		"ld", 2, 2, 1, {T_DIR | T_IND, T_REG, 0}, 4
-	},
-	{
- 		"st", 3, 2, 1, {T_REG, T_REG | T_IND, 0}, 4
-	},
-	{
-		"add", 4, 3, 1, {T_REG, T_REG, T_REG}, 4
-	},
-	{
-		"sub", 5, 3, 1, {T_REG, T_REG, T_REG}, 4
-	},
-	{
-		"and", 6, 3, 1, {T_REG | T_DIR | T_IND, T_REG | T_DIR | T_IND, T_REG}, 4
-	},
-	{
-		"or", 7, 3, 1, {T_REG | T_DIR | T_IND, T_REG | T_DIR | T_IND, T_REG}, 4
-	},
-	{
-		"xor", 8, 3, 1, {T_REG | T_DIR | T_IND, T_REG | T_DIR | T_IND, T_REG}, 4
-	},
-	{
-		"zjmp", 9, 1, 0, {T_DIR, 0, 0}, 2
-	},
-	{
-		"ldi", 10, 3, 1, {T_REG | T_DIR | T_IND, T_REG | T_DIR, T_REG}, 2
-	},
-	{
-		"sti", 11, 3, 1, {T_REG, T_REG | T_DIR | T_IND, T_REG | T_DIR}, 2
-	},
-	{
-		"fork", 12, 1, 0, {T_DIR, 0, 0}, 2
-	},
-	{
-		"lld", 13, 2, 1, {T_DIR | T_IND, T_REG, 0}, 4
-	},
-	{
-		"lldi", 14, 3, 1, {T_REG | T_DIR | T_IND, T_REG | T_DIR, T_REG}, 2
-	},
-	{
-		"lfork", 15, 1, 0, {T_DIR, 0, 0}, 2
-	},
-	{
-		"aff", 16, 1, 1, {T_REG, 0, 0}, 4
-	}
+	{"live", 1, 1, 0, {T_DIR, 0, 0}, 4},
+	{"ld", 2, 2, 1, {T_DIR | T_IND, T_REG, 0}, 4},
+	{"st", 3, 2, 1, {T_REG, T_REG | T_IND, 0}, 4},
+	{"add", 4, 3, 1, {T_REG, T_REG, T_REG}, 4},
+	{"sub", 5, 3, 1, {T_REG, T_REG, T_REG}, 4},
+	{"and", 6, 3, 1, {T_REG | T_DIR | T_IND, T_REG | T_DIR | T_IND, T_REG}, 4},
+	{"or", 7, 3, 1, {T_REG | T_DIR | T_IND, T_REG | T_DIR | T_IND, T_REG}, 4},
+	{"xor", 8, 3, 1, {T_REG | T_DIR | T_IND, T_REG | T_DIR | T_IND, T_REG}, 4},
+	{"zjmp", 9, 1, 0, {T_DIR, 0, 0}, 2},
+	{"ldi", 10, 3, 1, {T_REG | T_DIR | T_IND, T_REG | T_DIR, T_REG}, 2},
+	{"sti", 11, 3, 1, {T_REG, T_REG | T_DIR | T_IND, T_REG | T_DIR}, 2},
+	{"fork", 12, 1, 0, {T_DIR, 0, 0}, 2},
+	{"lld", 13, 2, 1, {T_DIR | T_IND, T_REG, 0}, 4},
+	{"lldi", 14, 3, 1, {T_REG | T_DIR | T_IND, T_REG | T_DIR, T_REG}, 2},
+	{"lfork", 15, 1, 0, {T_DIR, 0, 0}, 2},
+	{"aff", 16, 1, 1, {T_REG, 0, 0}, 4}
 };
 
 #endif

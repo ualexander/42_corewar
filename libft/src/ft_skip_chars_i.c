@@ -1,25 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   ft_skip_chars_i.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/04/14 16:05:48 by vsanta            #+#    #+#             */
-/*   Updated: 2019/09/26 18:04:37 by vsanta           ###   ########.fr       */
+/*   Created: 2019/09/26 15:31:15 by vsanta            #+#    #+#             */
+/*   Updated: 2019/09/26 15:32:42 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
+#include "libft.h"
 
-# include "libft.h"
-# include <fcntl.h>
-# include <unistd.h>
-# include <stdio.h>
-# define BUFF_SIZE 50
-# define MAX_FD 10
+int ft_skip_chars_i(char *line, char *skip_chars)
+{
+	int i;
 
-int	get_next_line(const int fd, char **line);
-
-#endif
+	i = 0;
+	while (line[i] && ft_strchr(skip_chars, line[i]))
+		i++;
+	return (i);
+}

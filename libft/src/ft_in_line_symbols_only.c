@@ -1,25 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   ft_in_line_symbols_only.c                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/04/14 16:05:48 by vsanta            #+#    #+#             */
-/*   Updated: 2019/09/26 18:04:37 by vsanta           ###   ########.fr       */
+/*   Created: 2019/09/26 15:44:19 by vsanta            #+#    #+#             */
+/*   Updated: 2019/09/26 15:44:34 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
+#include "libft.h"
 
-# include "libft.h"
-# include <fcntl.h>
-# include <unistd.h>
-# include <stdio.h>
-# define BUFF_SIZE 50
-# define MAX_FD 10
+int ft_in_line_symbols_only(char *line, int n, char *symbols_only)
+{
+	int i;
 
-int	get_next_line(const int fd, char **line);
-
-#endif
+	i = 0;
+	while (line[i] && i < n)
+	{
+		if (ft_strchr(symbols_only, line[i]) == NULL)
+			return (0);
+		i++;
+	}
+	return (1);
+}

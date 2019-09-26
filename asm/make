@@ -1,2 +1,2 @@
-gcc main.c ../libft/libft.a -I includes/ -I ../libft/includes/ -I ../includes/ -o test
+gcc *.c ../libft/libft.a -I includes/ -I ../libft/includes/ -I ../includes/ -o test
 ./test asm_test

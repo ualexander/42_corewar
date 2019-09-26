@@ -8,9 +8,9 @@
 	  .comment       "
 
 
-.name     "hello"
+.name   	  ".name"
 
 			   hello:    
 
 
-fork
+    		fork
