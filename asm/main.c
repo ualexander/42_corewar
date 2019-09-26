@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 17:02:54 by vsanta            #+#    #+#             */
-/*   Updated: 2019/09/26 18:06:41 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/09/26 20:11:00 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,34 +25,48 @@ t_asm	*init()
 }
 
 
+int get_name(t_asm *asemb)
+{
+	int	first_bracket;
+	int second_bracket;
+	char *tmp;
+
+	first_bracket = ft_get_char_i(asemb->parse_line, CMD_BRACKETS);
+	second_bracket = first_bracket == -1 ? -1 : ft_get_char_i(&((asemb->parse_line)[first_bracket + 1]), CMD_BRACKETS);
+	
+	printf("%i | %i\n", first_bracket, second_bracket);
+	
+
+	// if (asemb->name == NULL && ff == -1)
+	// 	return (-1);
+	// if (asemb->name == NULL)
+	// 	asemb->name = ft_strdup(&((asemb->parse_line)[ff]));
+	// else
+	// {
+		
+	// 	tmp = ft_strjoin
+	// }
+
+	return (0);
+}
+
+
 
 int parse_file(t_asm *asemb)
 {
-	int i;
-
 	int gnl;
 	int line_type;
 
-	i = 1;
 	line_type = 0;
-
-	
-
-	while (i < 20)
+	while ((gnl = get_next_line(asemb->fd, &(asemb->parse_line))) > 0)
 	{
-		gnl = get_next_line(asemb->fd, &(asemb->parse_line));
 		// if (line_type == 0)
-		// 	line_type = get_line_type(asemb->parse_line);
-		// if (line_type == LINE_CMD_NAME)
-		// 	line_type = get_name(asemb);
+			line_type = get_line_type(asemb->parse_line);
 
-		// printf("%i\n", ft_get_char_i(asemb->parse_line, '"'));
+		printf("%i\n", line_type);
+		if (line_type == 30)
+			line_type = get_name(asemb);
 
-		// printf("%i\n", ft_strchr(asemb->parse_line, '"') - asemb->parse_line);
-		printf("%i | %i | %zu\n", i, gnl, ft_strlen(asemb->parse_line));
-
-		//printf("%i | %i| %s\n", gnl, get_line_type(asemb->parse_line), asemb->parse_line);
-		i++;
 	}
 	return (1);
 }
