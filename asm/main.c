@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 17:02:54 by vsanta            #+#    #+#             */
-/*   Updated: 2019/09/29 18:56:36 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/09/29 19:39:41 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,14 +26,14 @@ t_asm	*init()
 }
 
 /*
-** param in_procces 
+** arg in_procces
 ** if CMD_NAME_START in_procces must be 0
 ** if CMD_NAME_PROCCES in_procces must be 1
 ** return value
 ** if done return 0 else return 1
 ** if error return -1
 */
-int put_line(char *srs, char *dest, int in_procces, int max_dest_len)
+int put_line(char *srs, char *dest, int in_procces, int max_len)
 {
 	int		start;
 	int		len;
@@ -53,31 +53,37 @@ int put_line(char *srs, char *dest, int in_procces, int max_dest_len)
 		len = start == -1 ? ft_strlen(srs) : start;
 		start = 0;
 	}
-	tmp = ft_strsub(srs, start, len);
-	if (tmp == NULL || ft_strlen(dest) + len > max_dest_len)
+	if ((tmp = ft_strsub(srs, start, len)) == NULL ||
+		ft_strlen(dest) + len + (in_procces == 1 ? 1 : 0) > max_len)
 		in_procces = -1;
 	else
 		ft_strncpy(&(dest[ft_strlen(dest)]), tmp, len);
-	//printf("s = %i | len = %i | --- %s ----\n", start, len, tmp);
+	dest[ft_strlen(dest)] = in_procces == 1 ? '\n' : '\0';
 	return (ft_str_free(&tmp, in_procces));
 }
 
 
 int set_prog_name(t_asm *asemb, int line_type)
 {
-	int put_line_res;
+	int result;
+	int last_brackets_i;
 
-	put_line_res = put_line(asemb->parse_line, asemb->prog_name, line_type == CMD_NAME_START ? 0 : 1, PROG_NAME_LENGTH);
-
-	if (put_line_res == -1 || (put_line_res == 1 && ft_strlen(asemb->prog_name) >= PROG_NAME_LENGTH))
+	result = put_line(asemb->parse_line, asemb->prog_name,
+				line_type == CMD_NAME_START ? 0 : 1, PROG_NAME_LENGTH);
+	if (result == -1)
 		printf("ERROR NAME LEN\n");
-	else if (put_line_res == 1)
-		asemb->prog_name[ft_strlen(asemb->prog_name)] = '\n';
-
-	//printf("put_line_res = %i | line_type = %i\n", put_line_res, line_type);
-
-	return (put_line_res == 0 ? 0 : CMD_NAME_PROCCES);
+	if (result == 0)
+	{
+		last_brackets_i = ft_get_char_i(asemb->parse_line, CMD_BRACKETS);
+		last_brackets_i = last_brackets_i + ft_skip_chars_i(&(asemb->parse_line[last_brackets_i + 1]), SPACE_SYMBOLS);
+		printf("!!!!%i\n", last_brackets_i);
+		if (last_brackets_i != '\0' || last_brackets_i != COMMENT_CHAR || last_brackets_i != COMMENT_CHAR_ALT)
+			printf("ERROR !!!!!!!!!\n");
+	}
+	return (result == 0 ? 0 : CMD_NAME_PROCCES);
 }
+
+
 
 
 
