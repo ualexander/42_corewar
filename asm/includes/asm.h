@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/19 17:56:13 by vsanta            #+#    #+#             */
-/*   Updated: 2019/09/26 16:31:36 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/09/29 16:24:13 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,14 +29,15 @@
 
 int get_line_type(char *line);
 
-typedef struct	s_asm
+typedef struct		s_asm
 {
-	int		fd;
-	char	*parse_line;
-	char	*name;
-	char	*comment;
-}				t_asm;
-
+	int				fd;
+	char			*parse_line;
+ 	unsigned int	magic;
+ 	char			prog_name[PROG_NAME_LENGTH + 1];
+ 	unsigned int	prog_size;
+ 	char			comment[COMMENT_LENGTH + 1];
+}					t_asm;
 
 typedef enum
 {
@@ -96,6 +97,6 @@ static t_op		g_op[16] = {
 	{"lldi", 14, 3, 1, {T_REG | T_DIR | T_IND, T_REG | T_DIR, T_REG}, 2},
 	{"lfork", 15, 1, 0, {T_DIR, 0, 0}, 2},
 	{"aff", 16, 1, 1, {T_REG, 0, 0}, 4}
-};
+};		
 
 #endif
