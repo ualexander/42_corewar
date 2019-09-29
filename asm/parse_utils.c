@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/26 16:28:42 by vsanta            #+#    #+#             */
-/*   Updated: 2019/09/29 16:23:10 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/09/29 18:21:09 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ int get_line_type(char *line)
 		line[skip_space_i] == COMMENT_CHAR_ALT)
 		return (LINE_COMMENT);
 	else if (is_command(line, NAME_CMD_STRING))
-		return (LINE_CMD_NAME);
+		return (CMD_NAME_START);
 	else if (is_command(line, COMMENT_CMD_STRING))
 		return (LINE_CMD_COMMENT);
 	else if (is_instruction(line))

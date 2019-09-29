@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/19 17:56:13 by vsanta            #+#    #+#             */
-/*   Updated: 2019/09/29 16:24:13 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/09/29 18:18:07 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,8 @@
 
 #define LINE_EMPTY 10
 #define LINE_COMMENT 20
-#define LINE_CMD_NAME 30
+#define CMD_NAME_START 30
+#define CMD_NAME_PROCCES 31
 #define LINE_CMD_COMMENT 40
 #define LINE_INST 50
 #define LINE_INST_LABEL 60
