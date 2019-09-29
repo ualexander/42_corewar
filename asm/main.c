@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 17:02:54 by vsanta            #+#    #+#             */
-/*   Updated: 2019/09/29 19:39:41 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/09/29 19:50:42 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,17 +72,21 @@ int set_prog_name(t_asm *asemb, int line_type)
 				line_type == CMD_NAME_START ? 0 : 1, PROG_NAME_LENGTH);
 	if (result == -1)
 		printf("ERROR NAME LEN\n");
-	if (result == 0)
-	{
-		last_brackets_i = ft_get_char_i(asemb->parse_line, CMD_BRACKETS);
-		last_brackets_i = last_brackets_i + ft_skip_chars_i(&(asemb->parse_line[last_brackets_i + 1]), SPACE_SYMBOLS);
-		printf("!!!!%i\n", last_brackets_i);
-		if (last_brackets_i != '\0' || last_brackets_i != COMMENT_CHAR || last_brackets_i != COMMENT_CHAR_ALT)
-			printf("ERROR !!!!!!!!!\n");
-	}
 	return (result == 0 ? 0 : CMD_NAME_PROCCES);
 }
 
+
+int set_comment(t_asm *asemb, int line_type)
+{
+	int result;
+	int last_brackets_i;
+
+	result = put_line(asemb->parse_line, asemb->comment,
+				line_type == CMD_COMMENT_START ? 0 : 1, COMMENT_LENGTH);
+	if (result == -1)
+		printf("ERROR NAME LEN\n");
+	return (result == 0 ? 0 : CMD_COMMENT_PROCCES);
+}
 
 
 
@@ -125,6 +129,8 @@ int parse_file(t_asm *asemb)
 		printf("%i\n", line_type);
 		if (line_type == CMD_NAME_START || line_type == CMD_NAME_PROCCES)
 			line_type = set_prog_name(asemb, line_type);
+		else if (line_type == CMD_COMMENT_START || line_type == CMD_COMMENT_PROCCES)
+			line_type = set_comment(asemb, line_type);
 		else
 		{
 			line_type = 0;
@@ -134,6 +140,7 @@ int parse_file(t_asm *asemb)
 	}
 
 	printf("%s\n", asemb->prog_name);
+	printf("%s\n", asemb->comment);
 	return (1);
 }	
 

@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/19 17:56:13 by vsanta            #+#    #+#             */
-/*   Updated: 2019/09/29 19:25:19 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/09/29 19:43:32 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,14 @@
 #ifndef ASM_H
 # define ASM_H
 
-#define LINE_EMPTY 10
-#define LINE_COMMENT 20
+#define EMPTY_LINE 10
+#define COMMENT_LINE 20
 #define CMD_NAME_START 30
 #define CMD_NAME_PROCCES 31
-#define LINE_CMD_COMMENT 40
-#define LINE_INST 50
-#define LINE_INST_LABEL 60
+#define CMD_COMMENT_START 40
+#define CMD_COMMENT_PROCCES 41
+#define INSTRUCTION 50
+#define INSTRUCTION_LABEL 60
 
 #define CMD_BRACKETS '"'
 #define SPACE_SYMBOLS " \t"
