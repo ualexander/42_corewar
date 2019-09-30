@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   asm.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Alexandr <Alexandr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/19 17:56:13 by vsanta            #+#    #+#             */
-/*   Updated: 2019/09/29 23:03:12 by Alexandr         ###   ########.fr       */
+/*   Updated: 2019/09/30 15:51:08 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,16 +29,26 @@
 #define SPACE_SYMBOLS " \t"
 #define CMD_NUMBERS 16
 
-int get_line_type(char *line);
+
+typedef struct		s_inst
+{
+	char			*name;
+	int				arg_1;
+	int				arg_2;
+	int				arg_3;
+	int				len;
+}					t_inst;
 
 typedef struct		s_asm
 {
 	int				fd;
+	int				row;
 	char			*parse_line;
  	unsigned int	magic;
  	char			prog_name[PROG_NAME_LENGTH + 1];
  	unsigned int	prog_size;
  	char			comment[COMMENT_LENGTH + 1];
+	t_inst			inst;
 }					t_asm;
 
 typedef enum
@@ -100,5 +110,10 @@ static t_op		g_op[16] = {
 	{"lfork", 15, 1, 0, {T_DIR, 0, 0}, 2},
 	{"aff", 16, 1, 1, {T_REG, 0, 0}, 4}
 };		
+
+
+int get_line_type(char *line);
+int parse_command_name(t_asm *asemb, int line_type);
+int parse_command_comment(t_asm *asemb, int line_type);
 
 #endif

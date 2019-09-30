@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Alexandr <Alexandr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 17:02:54 by vsanta            #+#    #+#             */
-/*   Updated: 2019/09/29 23:41:51 by Alexandr         ###   ########.fr       */
+/*   Updated: 2019/09/30 15:52:42 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ t_asm	*init()
 
 	asemb = (t_asm*)malloc(sizeof(t_asm));
 	asemb->fd = -1;
+	asemb->row = 0;
 	asemb->parse_line = NULL;
 	asemb->magic = COREWAR_EXEC_MAGIC;
 	ft_bzero(asemb->prog_name, PROG_NAME_LENGTH + 1);
@@ -25,113 +26,11 @@ t_asm	*init()
 	return (asemb);
 }
 
-/*
-** arg in_procces
-** if CMD_START in_procces must be 0
-** if CMD_PROCCES in_procces must be 1
-** return value
-** if done return 0 else return 1
-** if error return -1
-*/
-int put_line(char *srs, char *dest, int in_procces, int max_len)
+
+int parse_unstruction(t_asm *asemb)
 {
-	int		start;
-	int		len;
-	char	*tmp;
-
-	start = ft_get_char_i(srs, CMD_BRACKETS);
-	len = ft_get_char_i(&(srs[start + 1]), CMD_BRACKETS);
-	if (in_procces == 0)
-	{
-		in_procces = len == -1 ? 1 : 0;
-		len = len == -1 ? ft_strlen(&(srs[start + 1])) : len;
-		start++;
-	}
-	else if (in_procces == 1)
-	{
-		in_procces = start == -1 ? 1 : 0;
-		len = start == -1 ? ft_strlen(srs) : start;
-		start = 0;
-	}
-	if ((tmp = ft_strsub(srs, start, len)) == NULL ||
-		ft_strlen(dest) + len + (in_procces == 1 ? 1 : 0) > max_len)
-		in_procces = -1;
-	else
-		ft_strncpy(&(dest[ft_strlen(dest)]), tmp, len);
-	dest[ft_strlen(dest)] = in_procces == 1 ? '\n' : '\0';
-	return (ft_str_free(&tmp, in_procces));
+	
 }
-
-int cmd_end_i(char *line)
-{
-	int bracket_f;
-	int bracket_s;
-	int end;
-
-	bracket_f = ft_get_char_i(line, CMD_BRACKETS);
-	bracket_s = ft_get_char_i(&(line[bracket_f + 1]), CMD_BRACKETS);
-	end = bracket_f + 1 + (bracket_s == -1 ? 0 : bracket_s + 1);
-	end += ft_skip_chars_i(&(line[end]), SPACE_SYMBOLS);
-	return (end);
-}
-
-int set_prog_name(t_asm *asemb, int line_type)
-{
-	int result;
-	int last;
-
-	result = put_line(asemb->parse_line, asemb->prog_name,
-				line_type == CMD_NAME_START ? 0 : 1, PROG_NAME_LENGTH);
-	if (result == -1)
-		printf("ERROR NAME LEN\n");
-	last = cmd_end_i(asemb->parse_line);
-	if (result == 0 && (asemb->parse_line[last] != 0 && asemb->parse_line[last] !=
-		COMMENT_CHAR && asemb->parse_line[last] != COMMENT_CHAR_ALT))
-		printf("UNDEF COMAND - %s\n", &(asemb->parse_line[last]));
-	return (result == 0 ? 0 : CMD_NAME_PROCCES);
-}
-
-
-
-
-int set_comment(t_asm *asemb, int line_type)
-{
-	int result;
-	int last_brackets_i;
-
-	result = put_line(asemb->parse_line, asemb->comment,
-				line_type == CMD_COMMENT_START ? 0 : 1, COMMENT_LENGTH);
-	if (result == -1)
-		printf("ERROR NAME LEN\n");
-	return (result == 0 ? 0 : CMD_COMMENT_PROCCES);
-}
-
-
-
-
-	// int		start;
-	// int		len;
-	// char	*tmp;
-	// int		ret_val;
-
-	// start = ft_get_char_i(asemb->parse_line, CMD_BRACKETS);
-	// len = ft_get_char_i(&(asemb->parse_line[start + 1]), CMD_BRACKETS);
-	// if (line_type == LINE_CMD_NAME)
-	// {
-	// 	ret_val = len == -1 ? LINE_CMD_NAME + 1 : 0;
-	// 	len = len == -1 ? ft_strlen(&(asemb->parse_line[start + 1])) : len;
-	// 	start++;
-	// }
-	// else if (line_type == LINE_CMD_NAME + 1)
-	// {
-	// 	ret_val = start == -1 ? LINE_CMD_NAME + 1 : 0;
-	// 	len = start == -1 ? ft_strlen(asemb->parse_line) : start;
-	// 	start = 0;
-	// }
-	// tmp = ft_strsub(asemb->parse_line, start, len);
-	// printf("s = %i | len = %i | --- %s ----\n", start, len, tmp);
-	// return (ret_val);
-
 
 int parse_file(t_asm *asemb)
 {
@@ -141,24 +40,22 @@ int parse_file(t_asm *asemb)
 	line_type = 0;
 	while ((gnl = get_next_line(asemb->fd, &(asemb->parse_line))) > 0)
 	{
+		asemb->row++;
 		if (line_type == 0)
 			line_type = get_line_type(asemb->parse_line);
 
-		printf("%i\n", line_type);
+		printf("%i - %i\n", line_type, gnl);
 		if (line_type == CMD_NAME_START || line_type == CMD_NAME_PROCCES)
-			line_type = set_prog_name(asemb, line_type);
+			line_type = parse_command_name(asemb, line_type);
 		else if (line_type == CMD_COMMENT_START || line_type == CMD_COMMENT_PROCCES)
-			line_type = set_comment(asemb, line_type);
+			line_type = parse_command_comment(asemb, line_type);
 		else
-		{
 			line_type = 0;
-		}
-		
-
 	}
 
-	printf("%s\n", asemb->prog_name);
-	printf("%s\n", asemb->comment);
+	printf("name = %s\n", asemb->prog_name);
+	printf("comment = %s\n", asemb->comment);
+	printf("rows = %i\n", asemb->row);
 	return (1);
 }	
 
