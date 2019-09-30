@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/26 16:28:42 by vsanta            #+#    #+#             */
-/*   Updated: 2019/09/30 15:32:38 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/09/30 17:03:38 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,19 +44,13 @@ static int is_instruction_label(char *line)
 
 static int is_instruction(char *line)
 {
-	int i;
+	
 	int skip_space_i;
-
-	i = 0;
+	int instruction_i;
+	
 	skip_space_i = ft_skip_chars_i(line, SPACE_SYMBOLS);
-	while (i < CMD_NUMBERS)
-	{
-		if (ft_strncmp(&line[skip_space_i], g_op[i].name,
-			ft_strlen(g_op[i].name)) == 0)
-			return (1);
-		i++;
-	}
-	return (0);
+	instruction_i = get_instruction_i_in_str(&line[skip_space_i]);
+	return (instruction_i == -1 ? 0 : 1);
 }
 
 int get_line_type(char *line)

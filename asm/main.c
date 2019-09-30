@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 17:02:54 by vsanta            #+#    #+#             */
-/*   Updated: 2019/09/30 15:52:42 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/09/30 17:19:20 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,25 @@ t_asm	*init()
 }
 
 
+int get_arg_type(char *args)
+{
+	int skip_space_i;
+	skip_space_i = ft_skip_chars_i(args, SPACE_SYMBOLS);
+	if (args)
+}
+
 int parse_unstruction(t_asm *asemb)
 {
+	int skip_space_i;
+	t_op cur_op;
+
+	skip_space_i = ft_skip_chars_i(asemb->parse_line, SPACE_SYMBOLS);
+	cur_op = g_op[get_instruction_i_in_str(&(asemb->parse_line[skip_space_i]))];
+
 	
+
+	printf("----- %s | len = %i\n", cur_op.name, skip_space_i + ft_strlen(cur_op.name));
+	return (0);
 }
 
 int parse_file(t_asm *asemb)
@@ -43,12 +59,19 @@ int parse_file(t_asm *asemb)
 		asemb->row++;
 		if (line_type == 0)
 			line_type = get_line_type(asemb->parse_line);
-
 		printf("%i - %i\n", line_type, gnl);
+		if (line_type == EMPTY_LINE || line_type == COMMENT_LINE)
+		{
+			line_type = 0;
+			continue ;
+		}
+			
 		if (line_type == CMD_NAME_START || line_type == CMD_NAME_PROCCES)
 			line_type = parse_command_name(asemb, line_type);
 		else if (line_type == CMD_COMMENT_START || line_type == CMD_COMMENT_PROCCES)
 			line_type = parse_command_comment(asemb, line_type);
+		else if (line_type == INSTRUCTION)
+			line_type = parse_unstruction(asemb);
 		else
 			line_type = 0;
 	}

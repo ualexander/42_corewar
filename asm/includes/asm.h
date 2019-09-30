@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/19 17:56:13 by vsanta            #+#    #+#             */
-/*   Updated: 2019/09/30 15:51:08 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/09/30 17:22:59 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,18 @@
 typedef struct		s_inst
 {
 	char			*name;
+	char			arg_type;
+	int				arg_0;
 	int				arg_1;
 	int				arg_2;
-	int				arg_3;
 	int				len;
 }					t_inst;
+
+typedef struct		s_label
+{
+	char			*name;
+	t_inst			inst;
+}					t_label;
 
 typedef struct		s_asm
 {
@@ -51,36 +58,54 @@ typedef struct		s_asm
 	t_inst			inst;
 }					t_asm;
 
+
 typedef enum
 {
-	COMMAND,
-	STRING,
-	LABEL,
-	OPERATOR,
 	REGISTER,
 	DIRECT,
 	DIRECT_LABEL,
 	INDIRECT,
-	INDIRECT_LABEL,
-	SEPARATOR,
-	NEW_LINE,
-	END
+	INDIRECT_LABEL
 }	t_type;
 
 static char				*g_type[] = {
-	"COMMAND",
-	"STRING",
-	"LABEL",
-	"OPERATOR",
 	"REGISTER",
 	"DIRECT",
 	"DIRECT_LABEL",
 	"INDIRECT",
-	"INDIRECT_LABEL",
-	"SEPARATOR",
-	"NEW_LINE",
-	"END"
+	"INDIRECT_LABEL"
 };
+
+// typedef enum
+// {
+// 	COMMAND,
+// 	STRING,
+// 	LABEL,
+// 	OPERATOR,
+// 	REGISTER,
+// 	DIRECT,
+// 	DIRECT_LABEL,
+// 	INDIRECT,
+// 	INDIRECT_LABEL,
+// 	SEPARATOR,
+// 	NEW_LINE,
+// 	END
+// }	t_type;
+
+// static char				*g_type[] = {
+// 	"COMMAND",
+// 	"STRING",
+// 	"LABEL",
+// 	"OPERATOR",
+// 	"REGISTER",
+// 	"DIRECT",
+// 	"DIRECT_LABEL",
+// 	"INDIRECT",
+// 	"INDIRECT_LABEL",
+// 	"SEPARATOR",
+// 	"NEW_LINE",
+// 	"END"
+// };
 
 typedef struct	s_op
 {
@@ -115,5 +140,6 @@ static t_op		g_op[16] = {
 int get_line_type(char *line);
 int parse_command_name(t_asm *asemb, int line_type);
 int parse_command_comment(t_asm *asemb, int line_type);
+int get_instruction_i_in_str(char *instruction);
 
 #endif
