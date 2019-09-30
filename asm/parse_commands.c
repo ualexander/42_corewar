@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/30 15:21:23 by vsanta            #+#    #+#             */
-/*   Updated: 2019/09/30 17:02:44 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/09/30 18:27:11 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,8 @@ static int set_line_command(char *srs, char *dest, int in_procces, int max_len)
 	int		len;
 	char	*tmp;
 
-	start = ft_get_char_i(srs, CMD_BRACKETS);
-	len = ft_get_char_i(&(srs[start + 1]), CMD_BRACKETS);
+	start = ft_get_char_i(srs, BRACKET_CHAR);
+	len = ft_get_char_i(&(srs[start + 1]), BRACKET_CHAR);
 	if (in_procces == 0)
 	{
 		in_procces = len == -1 ? 1 : 0;
@@ -55,10 +55,10 @@ static int command_end_i(char *line)
 	int bracket_s;
 	int end;
 
-	bracket_f = ft_get_char_i(line, CMD_BRACKETS);
-	bracket_s = ft_get_char_i(&(line[bracket_f + 1]), CMD_BRACKETS);
+	bracket_f = ft_get_char_i(line, BRACKET_CHAR);
+	bracket_s = ft_get_char_i(&(line[bracket_f + 1]), BRACKET_CHAR);
 	end = bracket_f + 1 + (bracket_s == -1 ? 0 : bracket_s + 1);
-	end += ft_skip_chars_i(&(line[end]), SPACE_SYMBOLS);
+	end += ft_skip_chars_i(&(line[end]), SPACE_CHARS);
 	return (end);
 }
 

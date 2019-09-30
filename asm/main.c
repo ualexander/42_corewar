@@ -6,13 +6,13 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 17:02:54 by vsanta            #+#    #+#             */
-/*   Updated: 2019/09/30 17:19:20 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/09/30 20:37:52 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "asm.h"
 
-t_asm	*init()
+t_asm	*init(void)
 {
 	t_asm *asemb;
 
@@ -29,22 +29,81 @@ t_asm	*init()
 
 int get_arg_type(char *args)
 {
-	int skip_space_i;
-	skip_space_i = ft_skip_chars_i(args, SPACE_SYMBOLS);
-	if (args)
+	if (args[0] && args[0] == REG_CHAR)
+		return (T_REG);
+	if (args[0] && args[0] == DIRECT_CHAR &&
+		args[1] && args[1] == LABEL_CHAR)
+		return (T_DIR | T_LAB);
+	if (args[0] && args[0] == DIRECT_CHAR)
+		return (T_DIR);
+	if (args[0] && args[0] == LABEL_CHAR)
+		return (T_IND | T_LAB);
+	if (args[0] &&
+		(args[0] == '-' || ft_isdigit(args[0])))
+		return (T_IND);
+	return (0);
 }
 
-int parse_unstruction(t_asm *asemb)
+t_pos pos_init(void)
 {
-	int skip_space_i;
-	t_op cur_op;
+	t_pos pos;
 
-	skip_space_i = ft_skip_chars_i(asemb->parse_line, SPACE_SYMBOLS);
-	cur_op = g_op[get_instruction_i_in_str(&(asemb->parse_line[skip_space_i]))];
+	pos.lab = -1;
+	pos.inst = -1;
+	pos.arg_0 = -1;
+	pos.arg_1 = -1;
+	pos.arg_2 = -1;
+	return (pos);
+}
 
-	
+static int is_instruction_label(char *line)
+{
 
-	printf("----- %s | len = %i\n", cur_op.name, skip_space_i + ft_strlen(cur_op.name));
+	int label_char_i;
+
+	if ((label_char_i = ft_get_char_i(line, LABEL_CHAR)) == -1)
+		return (0);
+	return (ft_in_line_symbols_only(line, label_char_i, LABEL_CHARS));
+}
+
+static int is_instruction(char *line)
+{
+	return (get_instruction_i_in_op(line) == -1 ? 0 : 1);
+}
+
+
+int parse_unstruction(t_asm *asemb, int line_type)
+{
+	int i;
+	int separator;
+	t_pos pos;
+
+	i = 0;
+	separator = 1;
+	pos = pos_init();
+	while (asemb->parse_line[i])
+	{
+		if (pos.arg_0 != -1 && pos.arg_1 != -1 && pos.arg_2 != -1)
+			break;
+		else if (pos.lab == -1 && pos.inst == -1 && is_instruction_label(&(asemb->parse_line[i])))
+			pos.lab = i;
+		else if (pos.inst == -1 && is_instruction(&(asemb->parse_line[i])))
+			pos.inst = i;
+		else if (pos.inst != -1 && separator && get_arg_type(&(asemb->parse_line[i])))
+		{
+			if (pos.arg_0 == -1)
+				pos.arg_0 = i;
+			else if (pos.arg_1 == -1)
+				pos.arg_1 = i;
+			else if (pos.arg_2 == -1)
+				pos.arg_2 = i;
+			separator = 0;
+		}
+		else if (asemb->parse_line[i] == SEPARATOR_CHAR)
+			separator = 1;
+		i++;
+	}
+	printf("lab = %i | inst = %i | arg_0 = %i | arg_1 = %i | arg_2 = %i \n", pos.lab, pos.inst, pos.arg_0, pos.arg_1, pos.arg_2);
 	return (0);
 }
 
@@ -70,8 +129,8 @@ int parse_file(t_asm *asemb)
 			line_type = parse_command_name(asemb, line_type);
 		else if (line_type == CMD_COMMENT_START || line_type == CMD_COMMENT_PROCCES)
 			line_type = parse_command_comment(asemb, line_type);
-		else if (line_type == INSTRUCTION)
-			line_type = parse_unstruction(asemb);
+		else if (line_type == INSTRUCTION || line_type == INSTRUCTION_LABEL)
+			line_type = parse_unstruction(asemb, line_type);
 		else
 			line_type = 0;
 	}
