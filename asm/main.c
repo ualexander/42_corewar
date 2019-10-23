@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 17:02:54 by vsanta            #+#    #+#             */
-/*   Updated: 2019/10/23 18:20:03 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/10/23 19:22:50 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,20 +45,20 @@ int get_arg_type(char *args)
 
 t_pos *init_pos(void)
 {
-	t_pos *ps;
-	if ((ps = malloc(sizeof(t_pos))) == NULL)
+	t_pos *pos;
+	if ((pos = malloc(sizeof(t_pos))) == NULL)
 		return NULL;
-	ps->lab = -1;
-	ps->inst = -1;
-	ps->arg_0 = -1;
-	ps->arg_1 = -1;
-	ps->arg_2 = -1;
-	ps->i = 0;
-	ps->is_sep = 1;
-	return (ps);
+	pos->lab = -1;
+	pos->inst = -1;
+	pos->arg_0 = -1;
+	pos->arg_1 = -1;
+	pos->arg_2 = -1;
+	pos->i = 0;
+	pos->is_sep = 1;
+	return (pos);
 }
 
-int parse_unstruction(t_asm *asemb, int line_type)
+t_pos *get_instr_pos(t_asm *asemb, int line_type)
 {
 	t_pos *ps;
 
@@ -84,7 +84,19 @@ int parse_unstruction(t_asm *asemb, int line_type)
 			ps->is_sep = 1;
 		ps->i++;
 	}
-	printf("lab = %i | inst = %i | arg_0 = %i | arg_1 = %i | arg_2 = %i \n", ps->lab, ps->inst, ps->arg_0, ps->arg_1, ps->arg_2);
+	return (ps);
+}
+
+int parse_instruction(t_asm *asemb, int line_type)
+{
+	t_pos *pos;
+
+	pos = get_instr_pos(asemb, line_type);
+
+
+	
+	printf("lab = %i | inst = %i | arg_0 = %i | arg_1 = %i | arg_2 = %i \n", pos->lab, pos->inst, pos->arg_0, pos->arg_1, pos->arg_2);
+
 	return (0);
 }
 
@@ -99,26 +111,20 @@ int parse_file(t_asm *asemb)
 		asemb->row++;
 		if (line_type == 0)
 			line_type = get_line_type(asemb->parse_line);
-		printf("%i - %i\n", line_type, gnl);
 		if (line_type == EMPTY_LINE || line_type == COMMENT_LINE)
 		{
 			line_type = 0;
 			continue ;
 		}
-
 		if (line_type == CMD_NAME_START || line_type == CMD_NAME_PROCCES)
 			line_type = parse_command_name(asemb, line_type);
 		else if (line_type == CMD_COMMENT_START || line_type == CMD_COMMENT_PROCCES)
 			line_type = parse_command_comment(asemb, line_type);
 		else if (line_type == INSTRUCTION || line_type == INSTRUCTION_LABEL)
-			line_type = parse_unstruction(asemb, line_type);
+			line_type = parse_instruction(asemb, line_type);
 		else
 			line_type = 0;
 	}
-
-	printf("name = %s\n", asemb->prog_name);
-	printf("comment = %s\n", asemb->comment);
-	printf("rows = %i\n", asemb->row);
 	return (1);
 }	
 
