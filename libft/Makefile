@@ -6,7 +6,7 @@
 #    By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/02/11 18:03:01 by vsanta            #+#    #+#              #
-#    Updated: 2019/09/26 18:04:51 by vsanta           ###   ########.fr        #
+#    Updated: 2019/09/29 15:53:41 by vsanta           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -43,7 +43,7 @@ SRC_NAME	= ft_abs.c ft_lst_iter.c ft_putchar.c ft_strlen.c \
 			ft_lltoa_base.c ft_pow.c ft_strjoin.c ft_w_count.c \
 			ft_lst_free.c ft_powl.c ft_strlcat.c get_next_line.c \
 			ft_str_free.c ft_mtx_new.c ft_mtx_free.c ft_is_valid_int.c \
-			ft_memdup.c ft_get_char_i.c ft_skip_chars_i.c ft_in_line_symbols_only.c \
+			ft_memdup.c ft_get_char_i.c ft_skip_chars_i.c ft_in_line_symbols_only.c ft_char_count.c \
 			f_clear_fd_node.c ft_lstadd.c ft_lstcount.c ft_lstdelnode.c ft_lstclear.c \
 			ft_lstiter.c ft_lstnew.c f_get_next_line.c f_clear_fd_node.c \
 			ft_lstdel.c ft_lstdelone.c ft_lstmap.c ft_lstpushback.c \

@@ -1,27 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_in_line_symbols_only.c                          :+:      :+:    :+:   */
+/*   ft_char_count.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/09/26 15:44:19 by vsanta            #+#    #+#             */
-/*   Updated: 2019/09/30 18:55:00 by vsanta           ###   ########.fr       */
+/*   Created: 2019/09/29 15:52:42 by vsanta            #+#    #+#             */
+/*   Updated: 2019/09/29 15:52:58 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int ft_in_line_symbols_only(char *line, int n, char *symbols_only)
+int ft_char_count(char *str, char c)
 {
 	int i;
+	int count;
 
 	i = 0;
-	while (line[i] && i < n)
+	count = 0;
+	while (str[i])
 	{
-		if (ft_strchr(symbols_only, line[i]) == NULL)
-			return (0);
+		if (str[i] == c)
+			count++;
 		i++;
 	}
-	return (1);
+	return (count);
 }

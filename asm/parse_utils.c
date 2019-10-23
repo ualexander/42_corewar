@@ -6,13 +6,13 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/26 16:28:42 by vsanta            #+#    #+#             */
-/*   Updated: 2019/09/30 19:18:41 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/10/23 18:22:38 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "asm.h"
 
-static int is_command(char *line, char *command)
+int is_command(char *line, char *command)
 {
 	int cmd_len;
 	int space_after;
@@ -26,9 +26,8 @@ static int is_command(char *line, char *command)
 	return (1);
 }
 
-static int is_instruction_label(char *line)
+int is_instruction_label(char *line)
 {
-
 	int label_char_i;
 
 	if ((label_char_i = ft_get_char_i(line, LABEL_CHAR)) == -1)
@@ -36,7 +35,7 @@ static int is_instruction_label(char *line)
 	return (ft_in_line_symbols_only(line, label_char_i, LABEL_CHARS));
 }
 
-static int is_instruction(char *line)
+int is_instruction(char *line)
 {
 	return (get_instruction_i_in_op(line) == -1 ? 0 : 1);
 }

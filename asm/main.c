@@ -6,17 +6,17 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 17:02:54 by vsanta            #+#    #+#             */
-/*   Updated: 2019/09/30 20:37:52 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/10/23 18:20:03 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "asm.h"
 
-t_asm	*init(void)
+t_asm	*init_asemb(void)
 {
 	t_asm *asemb;
-
-	asemb = (t_asm*)malloc(sizeof(t_asm));
+	if ((asemb = (t_asm*)malloc(sizeof(t_asm))) == NULL)
+		return NULL;
 	asemb->fd = -1;
 	asemb->row = 0;
 	asemb->parse_line = NULL;
@@ -25,7 +25,6 @@ t_asm	*init(void)
 	ft_bzero(asemb->comment, COMMENT_LENGTH + 1);
 	return (asemb);
 }
-
 
 int get_arg_type(char *args)
 {
@@ -44,66 +43,48 @@ int get_arg_type(char *args)
 	return (0);
 }
 
-t_pos pos_init(void)
+t_pos *init_pos(void)
 {
-	t_pos pos;
-
-	pos.lab = -1;
-	pos.inst = -1;
-	pos.arg_0 = -1;
-	pos.arg_1 = -1;
-	pos.arg_2 = -1;
-	return (pos);
+	t_pos *ps;
+	if ((ps = malloc(sizeof(t_pos))) == NULL)
+		return NULL;
+	ps->lab = -1;
+	ps->inst = -1;
+	ps->arg_0 = -1;
+	ps->arg_1 = -1;
+	ps->arg_2 = -1;
+	ps->i = 0;
+	ps->is_sep = 1;
+	return (ps);
 }
-
-static int is_instruction_label(char *line)
-{
-
-	int label_char_i;
-
-	if ((label_char_i = ft_get_char_i(line, LABEL_CHAR)) == -1)
-		return (0);
-	return (ft_in_line_symbols_only(line, label_char_i, LABEL_CHARS));
-}
-
-static int is_instruction(char *line)
-{
-	return (get_instruction_i_in_op(line) == -1 ? 0 : 1);
-}
-
 
 int parse_unstruction(t_asm *asemb, int line_type)
 {
-	int i;
-	int separator;
-	t_pos pos;
+	t_pos *ps;
 
-	i = 0;
-	separator = 1;
-	pos = pos_init();
-	while (asemb->parse_line[i])
+	ps = init_pos();
+	while (asemb->parse_line[ps->i])
 	{
-		if (pos.arg_0 != -1 && pos.arg_1 != -1 && pos.arg_2 != -1)
+		if (ps->arg_0 != -1 && ps->arg_1 != -1 && ps->arg_2 != -1)
 			break;
-		else if (pos.lab == -1 && pos.inst == -1 && is_instruction_label(&(asemb->parse_line[i])))
-			pos.lab = i;
-		else if (pos.inst == -1 && is_instruction(&(asemb->parse_line[i])))
-			pos.inst = i;
-		else if (pos.inst != -1 && separator && get_arg_type(&(asemb->parse_line[i])))
+		else if (ps->lab == -1 && ps->inst == -1 &&
+			is_instruction_label(&(asemb->parse_line[ps->i])))
+			ps->lab = ps->i;
+		else if (ps->inst == -1 && is_instruction(&(asemb->parse_line[ps->i])))
+			ps->inst = ps->i;
+		else if (ps->inst != -1 && ps->is_sep &&
+			get_arg_type(&(asemb->parse_line[ps->i])))
 		{
-			if (pos.arg_0 == -1)
-				pos.arg_0 = i;
-			else if (pos.arg_1 == -1)
-				pos.arg_1 = i;
-			else if (pos.arg_2 == -1)
-				pos.arg_2 = i;
-			separator = 0;
+			ps->arg_2 = ps->arg_2 == -1 && ps->arg_1 != -1 ? ps->i : ps->arg_2;
+			ps->arg_1 = ps->arg_1 == -1 && ps->arg_0 != -1 ? ps->i : ps->arg_1;
+			ps->arg_0 = ps->arg_0 == -1 ? ps->i : ps->arg_0;
+			ps->is_sep = 0;
 		}
-		else if (asemb->parse_line[i] == SEPARATOR_CHAR)
-			separator = 1;
-		i++;
+		else if (asemb->parse_line[ps->i] == SEPARATOR_CHAR)
+			ps->is_sep = 1;
+		ps->i++;
 	}
-	printf("lab = %i | inst = %i | arg_0 = %i | arg_1 = %i | arg_2 = %i \n", pos.lab, pos.inst, pos.arg_0, pos.arg_1, pos.arg_2);
+	printf("lab = %i | inst = %i | arg_0 = %i | arg_1 = %i | arg_2 = %i \n", ps->lab, ps->inst, ps->arg_0, ps->arg_1, ps->arg_2);
 	return (0);
 }
 
@@ -124,7 +105,7 @@ int parse_file(t_asm *asemb)
 			line_type = 0;
 			continue ;
 		}
-			
+
 		if (line_type == CMD_NAME_START || line_type == CMD_NAME_PROCCES)
 			line_type = parse_command_name(asemb, line_type);
 		else if (line_type == CMD_COMMENT_START || line_type == CMD_COMMENT_PROCCES)
@@ -146,7 +127,7 @@ int main(int ac, char **av)
 {
 	t_asm *asemb;
 
-	asemb = init();
+	asemb = init_asemb();
 
 	if (ac != 2)
 	{
