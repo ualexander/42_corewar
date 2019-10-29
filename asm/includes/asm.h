@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/19 17:56:13 by vsanta            #+#    #+#             */
-/*   Updated: 2019/10/29 18:28:08 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/10/29 20:12:21 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,9 @@
 #define CMD_NAME_PROCCES 31
 #define CMD_COMMENT_START 40
 #define CMD_COMMENT_PROCCES 41
-#define INSTRUCTION 50
-#define INSTRUCTION_LABEL 60
+#define ONLY_INST 50
+#define ONLY_LABEL 51
+#define LABEL_INST 52
 
 #define BRACKET_CHAR '"'
 #define SPACE_CHARS " \t"
@@ -41,6 +42,12 @@ typedef struct		s_pos
 	int				is_sep;
 }					t_pos;
 
+typedef struct		s_label
+{
+	char			*name;
+	void			*inst;
+}					t_label;
+
 typedef struct		s_inst
 {
 	t_label			*label;
@@ -55,11 +62,6 @@ typedef struct		s_inst
 	int				len;
 }					t_inst;
 
-typedef struct		s_label
-{
-	char			*name;
-	t_inst			inst;
-}					t_label;
 
 typedef struct		s_asm
 {
@@ -161,6 +163,10 @@ int is_instruction(char *line);
 int is_instruction_label(char *line);
 int get_arg_type(char *args);
 int parse_instruction(t_asm *asemb, int line_type);
+int parse_file(t_asm *asemb);
+
+int is_label_inst(char *line);
+int instruction_label(char *line);
 
 
 #endif

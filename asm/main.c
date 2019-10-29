@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 17:02:54 by vsanta            #+#    #+#             */
-/*   Updated: 2019/10/29 18:09:25 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/10/29 20:21:25 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,36 +32,6 @@ t_asm	*init_asemb(void)
 	return (asemb);
 }
 
-
-int parse_file(t_asm *asemb)
-{
-	int gnl;
-	int line_type;
-
-	line_type = 0;
-	while ((gnl = get_next_line(asemb->fd, &(asemb->parse_line))) > 0)
-	{
-		asemb->row++;
-		if (line_type == 0)
-			line_type = get_line_type(asemb->parse_line);
-		if (line_type == EMPTY_LINE || line_type == COMMENT_LINE)
-		{
-			line_type = 0;
-			continue ;
-		}
-		if (line_type == CMD_NAME_START || line_type == CMD_NAME_PROCCES)
-			line_type = parse_command_name(asemb, line_type);
-		else if (line_type == CMD_COMMENT_START || line_type == CMD_COMMENT_PROCCES)
-			line_type = parse_command_comment(asemb, line_type);
-		else if (line_type == INSTRUCTION || line_type == INSTRUCTION_LABEL)
-			line_type = parse_instruction(asemb, line_type);
-		else
-			line_type = 0;
-	}
-	return (1);
-}	
-
-
 int main(int ac, char **av)
 {
 
@@ -78,11 +48,14 @@ int main(int ac, char **av)
 	//printf("%s\n", ft_strchr(LABEL_CHARS, '9'));
 
 
-	printf("=====%i===\n", -3000 % MEM_SIZE);
+	// printf("=====%i===\n", -3000 % MEM_SIZE);
 
-	// asemb->fd = open(av[1], O_RDONLY);
+	asemb->fd = open(av[1], O_RDONLY);
 
-	// parse_file(asemb);
+	parse_file(asemb);
+
+
+	// printf("---   %i\n", is_label_inst("1qwe23:     sti r1, %:live, %1"));
 
 	// printf("%i\n", 1111 & 14);
 

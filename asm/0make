@@ -1,0 +1,2 @@
+gcc -g *.c ../libft/libft.a -I includes/ -I ../libft/includes/ -I ../includes/ -o 0test
+./0test 0asm_test
