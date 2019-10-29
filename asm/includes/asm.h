@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/19 17:56:13 by vsanta            #+#    #+#             */
-/*   Updated: 2019/10/23 17:01:56 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/10/29 18:28:08 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,11 +43,15 @@ typedef struct		s_pos
 
 typedef struct		s_inst
 {
+	t_label			*label;
 	char			*name;
-	char			arg_type;
+	char			args_codes;
 	int				arg_0;
 	int				arg_1;
 	int				arg_2;
+	t_label			*argl_0;
+	t_label			*argl_1;
+	t_label			*argl_2;
 	int				len;
 }					t_inst;
 
@@ -155,6 +159,8 @@ int get_instruction_i_in_op(char *instruction);
 int is_command(char *line, char *command);
 int is_instruction(char *line);
 int is_instruction_label(char *line);
+int get_arg_type(char *args);
+int parse_instruction(t_asm *asemb, int line_type);
 
 
 #endif

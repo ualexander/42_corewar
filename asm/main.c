@@ -6,11 +6,17 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 17:02:54 by vsanta            #+#    #+#             */
-/*   Updated: 2019/10/23 19:22:50 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/10/29 18:09:25 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "asm.h"
+
+
+// REG - решистр r 1-16  (code 01) (size 1 bite)
+// DIR - прямой % + число/метка (прямое это само значение) (code 10) (size T_DIR)
+// IND - непрямое число/метка (непрямое это относительный адрес байт) (code 11) (size 2 bite)
+
 
 t_asm	*init_asemb(void)
 {
@@ -26,79 +32,6 @@ t_asm	*init_asemb(void)
 	return (asemb);
 }
 
-int get_arg_type(char *args)
-{
-	if (args[0] && args[0] == REG_CHAR)
-		return (T_REG);
-	if (args[0] && args[0] == DIRECT_CHAR &&
-		args[1] && args[1] == LABEL_CHAR)
-		return (T_DIR | T_LAB);
-	if (args[0] && args[0] == DIRECT_CHAR)
-		return (T_DIR);
-	if (args[0] && args[0] == LABEL_CHAR)
-		return (T_IND | T_LAB);
-	if (args[0] &&
-		(args[0] == '-' || ft_isdigit(args[0])))
-		return (T_IND);
-	return (0);
-}
-
-t_pos *init_pos(void)
-{
-	t_pos *pos;
-	if ((pos = malloc(sizeof(t_pos))) == NULL)
-		return NULL;
-	pos->lab = -1;
-	pos->inst = -1;
-	pos->arg_0 = -1;
-	pos->arg_1 = -1;
-	pos->arg_2 = -1;
-	pos->i = 0;
-	pos->is_sep = 1;
-	return (pos);
-}
-
-t_pos *get_instr_pos(t_asm *asemb, int line_type)
-{
-	t_pos *ps;
-
-	ps = init_pos();
-	while (asemb->parse_line[ps->i])
-	{
-		if (ps->arg_0 != -1 && ps->arg_1 != -1 && ps->arg_2 != -1)
-			break;
-		else if (ps->lab == -1 && ps->inst == -1 &&
-			is_instruction_label(&(asemb->parse_line[ps->i])))
-			ps->lab = ps->i;
-		else if (ps->inst == -1 && is_instruction(&(asemb->parse_line[ps->i])))
-			ps->inst = ps->i;
-		else if (ps->inst != -1 && ps->is_sep &&
-			get_arg_type(&(asemb->parse_line[ps->i])))
-		{
-			ps->arg_2 = ps->arg_2 == -1 && ps->arg_1 != -1 ? ps->i : ps->arg_2;
-			ps->arg_1 = ps->arg_1 == -1 && ps->arg_0 != -1 ? ps->i : ps->arg_1;
-			ps->arg_0 = ps->arg_0 == -1 ? ps->i : ps->arg_0;
-			ps->is_sep = 0;
-		}
-		else if (asemb->parse_line[ps->i] == SEPARATOR_CHAR)
-			ps->is_sep = 1;
-		ps->i++;
-	}
-	return (ps);
-}
-
-int parse_instruction(t_asm *asemb, int line_type)
-{
-	t_pos *pos;
-
-	pos = get_instr_pos(asemb, line_type);
-
-
-	
-	printf("lab = %i | inst = %i | arg_0 = %i | arg_1 = %i | arg_2 = %i \n", pos->lab, pos->inst, pos->arg_0, pos->arg_1, pos->arg_2);
-
-	return (0);
-}
 
 int parse_file(t_asm *asemb)
 {
@@ -131,10 +64,11 @@ int parse_file(t_asm *asemb)
 
 int main(int ac, char **av)
 {
+
+
 	t_asm *asemb;
 
 	asemb = init_asemb();
-
 	if (ac != 2)
 	{
 		printf("%s\n", "AC ERROR");
@@ -143,9 +77,12 @@ int main(int ac, char **av)
 
 	//printf("%s\n", ft_strchr(LABEL_CHARS, '9'));
 
-	asemb->fd = open(av[1], O_RDONLY);
 
-	parse_file(asemb);
+	printf("=====%i===\n", -3000 % MEM_SIZE);
+
+	// asemb->fd = open(av[1], O_RDONLY);
+
+	// parse_file(asemb);
 
 	// printf("%i\n", 1111 & 14);
 
