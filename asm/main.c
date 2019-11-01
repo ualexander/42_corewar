@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
+/*   By: Alexandr <Alexandr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 17:02:54 by vsanta            #+#    #+#             */
-/*   Updated: 2019/09/30 20:37:52 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/10/03 19:05:39 by Alexandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,14 +74,14 @@ static int is_instruction(char *line)
 
 int parse_unstruction(t_asm *asemb, int line_type)
 {
-	int i;
-	int separator;
-	t_pos pos;
+	int		i;
+	int		separator;
+	t_pos	pos;
 
 	i = 0;
 	separator = 1;
 	pos = pos_init();
-	while (asemb->parse_line[i])
+	while (asemb->parse_line[i] && asemb->parse_line[i] != COMMENT_CHAR && asemb->parse_line[i] != COMMENT_CHAR_ALT)
 	{
 		if (pos.arg_0 != -1 && pos.arg_1 != -1 && pos.arg_2 != -1)
 			break;
