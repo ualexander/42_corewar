@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/05 17:11:24 by vsanta            #+#    #+#             */
-/*   Updated: 2019/09/26 18:00:31 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/09/29 15:53:25 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,6 +122,7 @@ int						ft_get_char_i(char *str, char c);
 int						ft_skip_chars_i(char *line, char *skip_chars);
 int						ft_in_line_symbols_only(char *line, int n,
 						char *symbols_only);
+int						ft_char_count(char *str, char c);
 
 int						ft_tolower(int c);
 int						ft_toupper(int c);

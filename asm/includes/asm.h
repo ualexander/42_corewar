@@ -6,7 +6,11 @@
 /*   By: Alexandr <Alexandr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/19 17:56:13 by vsanta            #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2019/10/03 19:01:04 by Alexandr         ###   ########.fr       */
+=======
+/*   Updated: 2019/10/29 20:12:21 by vsanta           ###   ########.fr       */
+>>>>>>> ba79005be90bbab0fdc2d4e549a8a3331babac92
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +26,9 @@
 #define CMD_NAME_PROCCES 31
 #define CMD_COMMENT_START 40
 #define CMD_COMMENT_PROCCES 41
-#define INSTRUCTION 50
-#define INSTRUCTION_LABEL 60
+#define ONLY_INST 50
+#define ONLY_LABEL 51
+#define LABEL_INST 52
 
 #define BRACKET_CHAR '"'
 #define SPACE_CHARS " \t"
@@ -37,23 +42,30 @@ typedef struct		s_pos
 	int				arg_0;
 	int				arg_1;
 	int				arg_2;
+	int				i;
+	int				is_sep;
 }					t_pos;
-
-typedef struct		s_inst
-{
-	char			*name;
-	char			arg_type;
-	int				arg_0;
-	int				arg_1;
-	int				arg_2;
-	int				len;
-}					t_inst;
 
 typedef struct		s_label
 {
 	char			*name;
-	t_inst			inst;
+	void			*inst;
 }					t_label;
+
+typedef struct		s_inst
+{
+	t_label			*label;
+	char			*name;
+	char			args_codes;
+	int				arg_0;
+	int				arg_1;
+	int				arg_2;
+	t_label			*argl_0;
+	t_label			*argl_1;
+	t_label			*argl_2;
+	int				len;
+}					t_inst;
+
 
 typedef struct		s_asm
 {
@@ -150,5 +162,15 @@ int get_line_type(char *line);
 int parse_command_name(t_asm *asemb, int line_type);
 int parse_command_comment(t_asm *asemb, int line_type);
 int get_instruction_i_in_op(char *instruction);
+int is_command(char *line, char *command);
+int is_instruction(char *line);
+int is_instruction_label(char *line);
+int get_arg_type(char *args);
+int parse_instruction(t_asm *asemb, int line_type);
+int parse_file(t_asm *asemb);
+
+int is_label_inst(char *line);
+int instruction_label(char *line);
+
 
 #endif

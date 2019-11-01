@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_commands.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
+/*   By: Alexandr <Alexandr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/30 15:21:23 by vsanta            #+#    #+#             */
-/*   Updated: 2019/09/30 18:27:11 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/01 18:40:29 by Alexandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ int parse_command_name(t_asm *asemb, int line_type)
 	if (line_type == -1)
 		printf("ERROR NAME LEN\n");
 	last = command_end_i(asemb->parse_line);
-	if (line_type == 0 && (asemb->parse_line[last] != 0 &&
+	if (line_type == 0 && (asemb->parse_line[last] != '\0' &&
 		asemb->parse_line[last] != COMMENT_CHAR &&
 		asemb->parse_line[last] != COMMENT_CHAR_ALT))
 		printf("UNDEF COMAND - %s\n", &(asemb->parse_line[last]));
@@ -83,11 +83,11 @@ int parse_command_comment(t_asm *asemb, int line_type)
 	int last;
 
 	line_type = set_line_command(asemb->parse_line, asemb->comment,
-				line_type == CMD_COMMENT_START ? 0 : 1, COMMENT_LENGTH);
+		line_type == CMD_COMMENT_START ? 0 : 1, COMMENT_LENGTH);
 	if (line_type == -1)
 		printf("ERROR NAME LEN\n");
 	last = command_end_i(asemb->parse_line);
-	if (line_type == 0 && (asemb->parse_line[last] != 0 &&
+	if (line_type == 0 && (asemb->parse_line[last] != '\0' &&
 		asemb->parse_line[last] != COMMENT_CHAR &&
 		asemb->parse_line[last] != COMMENT_CHAR_ALT))
 		printf("UNDEF COMAND - %s\n", &(asemb->parse_line[last]));
