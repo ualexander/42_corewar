@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse_utils.c                                      :+:      :+:    :+:   */
+/*   line_type.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/26 16:28:42 by vsanta            #+#    #+#             */
-/*   Updated: 2019/10/29 20:34:18 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/02 14:49:50 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,21 +35,9 @@ int is_label(char *line)
 	return (ft_in_line_symbols_only(line, label_char_i, LABEL_CHARS) ? label_char_i : 0);
 }
 
-int is_only_inst(char *line)
+int is_instruclion(char *line)
 {
 	return (get_instruction_i_in_op(line) == -1 ? 0 : 1);
-}
-
-int is_label_inst(char *line)
-{
-	int label_char_i;
-
-	label_char_i = is_label(line);
-	if (label_char_i)
-		return (get_instruction_i_in_op(
-			&(line[ft_skip_chars_i(&(line[label_char_i + 1]), SPACE_CHARS)
-			+ label_char_i + 1])) == -1 ? 0 : 1);
-	return (0);
 }
 
 int get_line_type(char *line)
@@ -66,11 +54,9 @@ int get_line_type(char *line)
 		return (CMD_NAME_START);
 	if (is_command(&(line[skip_space_i]), COMMENT_CMD_STRING))
 		return (CMD_COMMENT_START);
-	if (is_label_inst(&(line[skip_space_i])))
-		return (LABEL_INST);
 	if (is_label(&(line[skip_space_i])))
-		return (ONLY_LABEL);
-	if (is_only_inst(&(line[skip_space_i])))
-		return (ONLY_INST);
+		return (LABEL);
+	if (is_instruclion(&(line[skip_space_i])))
+		return (INSTRUCTION);
 	return (0);
 }

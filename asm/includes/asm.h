@@ -3,14 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   asm.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Alexandr <Alexandr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/19 17:56:13 by vsanta            #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2019/10/03 19:01:04 by Alexandr         ###   ########.fr       */
-=======
-/*   Updated: 2019/10/29 20:12:21 by vsanta           ###   ########.fr       */
->>>>>>> ba79005be90bbab0fdc2d4e549a8a3331babac92
+/*   Updated: 2019/11/02 14:47:54 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,15 +22,17 @@
 #define CMD_NAME_PROCCES 31
 #define CMD_COMMENT_START 40
 #define CMD_COMMENT_PROCCES 41
-#define ONLY_INST 50
-#define ONLY_LABEL 51
-#define LABEL_INST 52
+#define LABEL 50
+#define INSTRUCTION 60
+
 
 #define BRACKET_CHAR '"'
 #define SPACE_CHARS " \t"
 #define REG_CHAR 'r'
 #define CMD_NUMBERS 16
 
+
+/*
 typedef struct		s_pos
 {
 	int				lab;
@@ -45,41 +43,44 @@ typedef struct		s_pos
 	int				i;
 	int				is_sep;
 }					t_pos;
+*/
+
+typedef struct		s_inst
+{
+	int				op;
+	int				arg_0;
+	int				arg_1;
+	int				arg_2;
+	char			*larg_0;
+	char			*larg_1;
+	char			*larg_2;
+	char			args_codes;
+}					t_inst;
 
 typedef struct		s_label
 {
 	char			*name;
-	void			*inst;
+	t_inst			*inst;
 }					t_label;
-
-typedef struct		s_inst
-{
-	t_label			*label;
-	char			*name;
-	char			args_codes;
-	int				arg_0;
-	int				arg_1;
-	int				arg_2;
-	t_label			*argl_0;
-	t_label			*argl_1;
-	t_label			*argl_2;
-	int				len;
-}					t_inst;
-
 
 typedef struct		s_asm
 {
 	int				fd;
-	int				row;
+	int				gnl;
 	char			*parse_line;
+	int				row;
+	int				col;
  	unsigned int	magic;
+	unsigned int	prog_size;
  	char			prog_name[PROG_NAME_LENGTH + 1];
- 	unsigned int	prog_size;
  	char			comment[COMMENT_LENGTH + 1];
-	t_inst			inst;
+	t_lst			*labels;
+	t_lst			*insts;
+	t_lst			*labels_queue;
 }					t_asm;
 
 
+/*
 typedef enum
 {
 	REGISTER,
@@ -97,36 +98,37 @@ static char				*g_type[] = {
 	"INDIRECT_LABEL"
 };
 
-// typedef enum
-// {
-// 	COMMAND,
-// 	STRING,
-// 	LABEL,
-// 	OPERATOR,
-// 	REGISTER,
-// 	DIRECT,
-// 	DIRECT_LABEL,
-// 	INDIRECT,
-// 	INDIRECT_LABEL,
-// 	SEPARATOR,
-// 	NEW_LINE,
-// 	END
-// }	t_type;
+typedef enum
+{
+	COMMAND,
+	STRING,
+	LABEL,
+	OPERATOR,
+	REGISTER,
+	DIRECT,
+	DIRECT_LABEL,
+	INDIRECT,
+	INDIRECT_LABEL,
+	SEPARATOR,
+	NEW_LINE,
+	END
+}	t_type;
 
-// static char				*g_type[] = {
-// 	"COMMAND",
-// 	"STRING",
-// 	"LABEL",
-// 	"OPERATOR",
-// 	"REGISTER",
-// 	"DIRECT",
-// 	"DIRECT_LABEL",
-// 	"INDIRECT",
-// 	"INDIRECT_LABEL",
-// 	"SEPARATOR",
-// 	"NEW_LINE",
-// 	"END"
-// };
+static char				*g_type[] = {
+	"COMMAND",
+	"STRING",
+	"LABEL",
+	"OPERATOR",
+	"REGISTER",
+	"DIRECT",
+	"DIRECT_LABEL",
+	"INDIRECT",
+	"INDIRECT_LABEL",
+	"SEPARATOR",
+	"NEW_LINE",
+	"END"
+};
+*/
 
 typedef struct	s_op
 {
@@ -166,8 +168,11 @@ int is_command(char *line, char *command);
 int is_instruction(char *line);
 int is_instruction_label(char *line);
 int get_arg_type(char *args);
-int parse_instruction(t_asm *asemb, int line_type);
 int parse_file(t_asm *asemb);
+
+
+int parse_instruction(t_asm *asemb, int line_type);
+int parse_label(t_asm *asemb, int line_type);
 
 int is_label_inst(char *line);
 int instruction_label(char *line);
