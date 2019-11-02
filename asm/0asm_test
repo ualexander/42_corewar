@@ -1,7 +1,6 @@
 he:
-he2:
-ntree:
-live	%42		# entree
+he2: 
+ffffff:     live	%42		# entree
 	ld -456454    ,  r5
 	ld	0,   r5
 	zjmp %:bite

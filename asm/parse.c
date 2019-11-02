@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/29 17:58:42 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/02 18:12:04 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/02 19:56:43 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,14 +63,13 @@ void connect_with_labels(t_asm *asemb, t_inst *inst)
 }
 
 
-
-int parse_instruction(t_asm *asemb)
+int parse_instruction(t_asm *asemb, char *line)
 {
 	t_inst *inst;
 
 	if ((inst = instruction_new()) == NULL)
 		put_error(asemb); // system error
-	asemb->col = ft_skip_chars_i(LINE(asemb->col), SPACE_CHARS);
+	asemb->col = ft_skip_chars_i(PARSE_LINE(asemb->col), SPACE_CHARS);
 
 	inst->line = asemb->parse_line;
 	connect_with_labels(asemb, inst);
@@ -79,30 +78,57 @@ int parse_instruction(t_asm *asemb)
 }
 
 
-int parse_label(t_asm *asemb)
+// int parse_label(t_asm *asemb, char line)
+// {
+// 	t_label *label;
+// 	char	*label_name;
+// 	int		label_char_i;
+
+// 	asemb->col = ft_skip_chars_i(PARSE_LINE(asemb->col), SPACE_CHARS);
+// 	label_char_i = ft_get_char_i(PARSE_LINE(asemb->col), LABEL_CHAR);
+// 	if ((label_name = ft_strsub(asemb->parse_line, asemb->col, label_char_i)) == NULL)
+// 		put_error(asemb); // system error
+// 	if ((label = label_new(label_name)) == NULL)
+// 		put_error(asemb); // system error // free label_name
+// 	ft_lst_push_back_data(&(asemb->labels_queue), (void*)label);
+// 	asemb->col = label_char_i + 1 + ft_skip_chars_i(PARSE_LINE(label_char_i + 1), SPACE_CHARS);
+// 	if (asemb->parse_line[asemb->col] && is_instruclion(PARSE_LINE(asemb->col)))
+// 		return (parse_instruction(asemb));
+// 	if (asemb->parse_line[asemb->col] != '\0' &&
+// 		is_comment_char(asemb->parse_line[asemb->col]) == 0)
+// 	put_error(asemb); // wrong symbol after label
+// 	return (0);
+// }
+
+
+int parse_label(t_asm *asemb, char *line)
 {
 	t_label *label;
 	char	*label_name;
-	int		label_char_i;
+	int		char_i;
 
-	asemb->col = ft_skip_chars_i(LINE(asemb->col), SPACE_CHARS);
-	label_char_i = ft_get_char_i(LINE(asemb->col), LABEL_CHAR);
-	if ((label_name = ft_strsub(asemb->parse_line, asemb->col, label_char_i)) == NULL)
+	line = &(asemb->parse_line[ft_skip_chars_i(asemb->parse_line, SPACE_CHARS)]);
+	char_i = ft_get_char_i(line, LABEL_CHAR);
+	if ((label_name = ft_strsub(line, 0, char_i)) == NULL)
 		put_error(asemb); // system error
 	if ((label = label_new(label_name)) == NULL)
 		put_error(asemb); // system error // free label_name
 	ft_lst_push_back_data(&(asemb->labels_queue), (void*)label);
-	asemb->col = label_char_i + 1;
-	if (asemb->parse_line[asemb->col] &&
-		get_line_type(LINE(asemb->col)) == IS_INSTRUCTION)
-		return (parse_instruction(asemb));
+	line = &(line[char_i + 1]);
+	line = &(line[ft_skip_chars_i(line, SPACE_CHARS)]);
+
+	asemb->col = char_i + 1 + ft_skip_chars_i(PARSE_LINE(char_i + 1), SPACE_CHARS);
+	if (asemb->parse_line[asemb->col] && is_instruclion(PARSE_LINE(asemb->col)))
+		return (parse_instruction(asemb, line));
+	if (asemb->parse_line[asemb->col] != '\0' &&
+		is_comment_char(asemb->parse_line[asemb->col]) == 0)
+	put_error(asemb); // wrong symbol after label
 	return (0);
 }
 
 
 int parse_file(t_asm *asemb)
 {
-	int gnl;
 	int line_type;
 
 	line_type = 0;
@@ -119,9 +145,9 @@ int parse_file(t_asm *asemb)
 		else if (line_type == CMD_COMMENT_START || line_type == CMD_COMMENT_PROCCES)
 			line_type = parse_command_comment(asemb, line_type);
 		else if (line_type == IS_LABEL)
-			line_type = parse_label(asemb);
+			line_type = parse_label(asemb, asemb->parse_line);
 		else if (line_type == IS_INSTRUCTION)
-			line_type = parse_instruction(asemb);
+			line_type = parse_instruction(asemb, asemb->parse_line);
 		else
 			line_type = 0;
 	}

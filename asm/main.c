@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 17:02:54 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/02 18:14:11 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/02 19:26:58 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,10 @@ int main(int ac, char **av)
 	{
 		printf("1 = %s - 2 = %s\n", LABEL(cur_lab)->name, LABEL(cur_lab)->inst->line);
 	}
+
+
+
+	
 	
 
 

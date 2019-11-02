@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/19 17:56:13 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/02 18:12:17 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/02 19:45:59 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 
 
-# define LINE(I) &(asemb->parse_line[I])
+# define PARSE_LINE(I) &(asemb->parse_line[I])
 # define LABEL(L) ((t_label*)(L->data))
 
 
@@ -178,13 +178,13 @@ int get_arg_type(char *args);
 int parse_file(t_asm *asemb);
 
 
-int parse_instruction(t_asm *asemb);
-int parse_label(t_asm *asemb);
+int parse_instruction(t_asm *asemb, char *line);
+int parse_label(t_asm *asemb, char *line);
 
 int put_error(t_asm *asemb);
 
-int is_label_inst(char *line);
-int instruction_label(char *line);
+int is_instruclion(char *line);
+int is_comment_char(char c);
 
 
 #endif
