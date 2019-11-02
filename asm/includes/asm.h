@@ -6,12 +6,18 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/19 17:56:13 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/02 14:47:54 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/02 18:12:17 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "libft.h"
 # include "op.h"
+
+
+
+# define LINE(I) &(asemb->parse_line[I])
+# define LABEL(L) ((t_label*)(L->data))
+
 
 #ifndef ASM_H
 # define ASM_H
@@ -22,8 +28,8 @@
 #define CMD_NAME_PROCCES 31
 #define CMD_COMMENT_START 40
 #define CMD_COMMENT_PROCCES 41
-#define LABEL 50
-#define INSTRUCTION 60
+#define IS_LABEL 50
+#define IS_INSTRUCTION 60
 
 
 #define BRACKET_CHAR '"'
@@ -47,6 +53,7 @@ typedef struct		s_pos
 
 typedef struct		s_inst
 {
+	char			*line;
 	int				op;
 	int				arg_0;
 	int				arg_1;
@@ -171,8 +178,10 @@ int get_arg_type(char *args);
 int parse_file(t_asm *asemb);
 
 
-int parse_instruction(t_asm *asemb, int line_type);
-int parse_label(t_asm *asemb, int line_type);
+int parse_instruction(t_asm *asemb);
+int parse_label(t_asm *asemb);
+
+int put_error(t_asm *asemb);
 
 int is_label_inst(char *line);
 int instruction_label(char *line);

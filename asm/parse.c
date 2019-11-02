@@ -6,23 +6,97 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/29 17:58:42 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/02 14:56:18 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/02 18:12:04 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "asm.h"
 
 
-t_label label_new
-
-int parse_instruction(t_asm *asemb, int line_type)
+t_label *label_new(char *name)
 {
-
+	t_label *new;
+	if (name == NULL)
+		return (NULL);
+	if ((new = (t_label*)malloc(sizeof(t_label))) == NULL)
+		return (NULL);
+	new->name = name;
+	new->inst = NULL;
+	return (new);
 }
 
-int parse_label(t_asm *asemb, int line_type)
+	// int				op;
+	// int				arg_0;
+	// int				arg_1;
+	// int				arg_2;
+	// char			*larg_0;
+	// char			*larg_1;
+	// char			*larg_2;
+	// char			args_codes;
+	
+t_inst *instruction_new()
 {
-	asemb->col = ft_skip_chars_i(asemb->parse_line, SPACE_CHARS);
+	t_inst *new;
+
+	if ((new = (t_inst*)malloc(sizeof(t_inst))) == NULL)
+		return (NULL);
+	new->op = -1;
+	new->arg_0 = -1;
+	new->arg_1 = -1;
+	new->arg_2 = -1;
+	new->larg_0 = NULL;
+	new->larg_1 = NULL;
+	new->larg_2 = NULL;
+	new->args_codes = 0;
+	return (new);
+}
+
+void connect_with_labels(t_asm *asemb, t_inst *inst)
+{
+	t_lst *cur_label;
+
+	while ((cur_label = ft_lst_pop_front(&(asemb->labels_queue))))
+	{
+		LABEL(cur_label)->inst = inst;
+		ft_lst_push_back(&(asemb->labels), cur_label);
+	}
+}
+
+
+
+int parse_instruction(t_asm *asemb)
+{
+	t_inst *inst;
+
+	if ((inst = instruction_new()) == NULL)
+		put_error(asemb); // system error
+	asemb->col = ft_skip_chars_i(LINE(asemb->col), SPACE_CHARS);
+
+	inst->line = asemb->parse_line;
+	connect_with_labels(asemb, inst);
+	
+	return (0);
+}
+
+
+int parse_label(t_asm *asemb)
+{
+	t_label *label;
+	char	*label_name;
+	int		label_char_i;
+
+	asemb->col = ft_skip_chars_i(LINE(asemb->col), SPACE_CHARS);
+	label_char_i = ft_get_char_i(LINE(asemb->col), LABEL_CHAR);
+	if ((label_name = ft_strsub(asemb->parse_line, asemb->col, label_char_i)) == NULL)
+		put_error(asemb); // system error
+	if ((label = label_new(label_name)) == NULL)
+		put_error(asemb); // system error // free label_name
+	ft_lst_push_back_data(&(asemb->labels_queue), (void*)label);
+	asemb->col = label_char_i + 1;
+	if (asemb->parse_line[asemb->col] &&
+		get_line_type(LINE(asemb->col)) == IS_INSTRUCTION)
+		return (parse_instruction(asemb));
+	return (0);
 }
 
 
@@ -44,10 +118,10 @@ int parse_file(t_asm *asemb)
 			line_type = parse_command_name(asemb, line_type);
 		else if (line_type == CMD_COMMENT_START || line_type == CMD_COMMENT_PROCCES)
 			line_type = parse_command_comment(asemb, line_type);
-		else if (line_type == LABEL)
-			line_type = parese_label(asemb, line_type);
-		else if (line_type == INSTRUCTION)
-			line_type = parse_instruction(asemb, line_type);
+		else if (line_type == IS_LABEL)
+			line_type = parse_label(asemb);
+		else if (line_type == IS_INSTRUCTION)
+			line_type = parse_instruction(asemb);
 		else
 			line_type = 0;
 	}

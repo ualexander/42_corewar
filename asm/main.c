@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 17:02:54 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/02 14:41:42 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/02 18:14:11 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,14 @@ int main(int ac, char **av)
 	asemb->fd = open(av[1], O_RDONLY);
 
 	parse_file(asemb);
+
+	t_lst *cur_lab;
+	
+	while ((cur_lab = ft_lst_pop_front(&(asemb->labels))))
+	{
+		printf("1 = %s - 2 = %s\n", LABEL(cur_lab)->name, LABEL(cur_lab)->inst->line);
+	}
+	
 
 
 	// printf("---   %i\n", is_label_inst("1qwe23:     sti r1, %:live, %1"));

@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/26 16:28:42 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/02 14:49:50 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/02 18:08:36 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,8 @@ int get_line_type(char *line)
 	if (is_command(&(line[skip_space_i]), COMMENT_CMD_STRING))
 		return (CMD_COMMENT_START);
 	if (is_label(&(line[skip_space_i])))
-		return (LABEL);
+		return (IS_LABEL);
 	if (is_instruclion(&(line[skip_space_i])))
-		return (INSTRUCTION);
+		return (IS_INSTRUCTION);
 	return (0);
 }
