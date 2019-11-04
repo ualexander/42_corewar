@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/29 17:58:42 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/04 20:13:52 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/04 20:15:44 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ char	*set_val_numb(t_asm *asemb, int *set_numb, char *line)
 	return (&line[i]);
 }
 
-char	*set_val_str(t_asm *asemb, char **set_label, char *line)
+char	*set_val_str(t_asm *asemb, char **set_str, char *line)
 {
 	int len;
 
@@ -83,7 +83,7 @@ char	*set_val_str(t_asm *asemb, char **set_label, char *line)
 		len++;
 	if (len == 0)
 		put_error(asemb); // not valid token
-	if ((*set_label = ft_strsub(line, 0, len)) == NULL)
+	if ((*set_str = ft_strsub(line, 0, len)) == NULL)
 		put_error(asemb); // system error
 	return (&line[len]);
 }
