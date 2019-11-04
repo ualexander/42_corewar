@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/30 17:01:58 by vsanta            #+#    #+#             */
-/*   Updated: 2019/09/30 19:00:03 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/04 16:18:29 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,4 +29,21 @@ int get_instruction_i_in_op(char *instruction)
 		i++;
 	}
 	return (result_i);
+}
+
+int get_arg_type(char *args)
+{
+	if (args[0] && args[0] == REG_CHAR)
+		return (T_REG);
+	if (args[0] && args[0] == DIRECT_CHAR &&
+		args[1] && args[1] == LABEL_CHAR)
+		return (T_DIR | T_LAB);
+	if (args[0] && args[0] == DIRECT_CHAR)
+		return (T_DIR);
+	if (args[0] && args[0] == LABEL_CHAR)
+		return (T_IND | T_LAB);
+	if (args[0] &&
+		(args[0] == '-' || ft_isdigit(args[0])))
+		return (T_IND);
+	return (0);
 }

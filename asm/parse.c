@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/29 17:58:42 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/02 19:56:43 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/04 17:08:54 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,10 +40,10 @@ t_inst *instruction_new()
 
 	if ((new = (t_inst*)malloc(sizeof(t_inst))) == NULL)
 		return (NULL);
-	new->op = -1;
-	new->arg_0 = -1;
-	new->arg_1 = -1;
-	new->arg_2 = -1;
+	new->op = NULL;
+	new->arg_0 = 0;
+	new->arg_1 = 0;
+	new->arg_2 = 0;
 	new->larg_0 = NULL;
 	new->larg_1 = NULL;
 	new->larg_2 = NULL;
@@ -62,6 +62,81 @@ void connect_with_labels(t_asm *asemb, t_inst *inst)
 	}
 }
 
+char *set_op(t_inst *inst, char *line)
+{
+	inst->op = &(g_op[get_instruction_i_in_op(line)]);
+	line = &(line[ft_strlen(inst->op->name)]);
+	line = &(line[ft_skip_chars_i(line, SPACE_CHARS)]);
+	return (line);
+}
+
+char	*set_int(t_asm *asemb, int *set_int, char *line)
+{
+	int	num;
+	int	i;
+
+	num = 0;
+	i = line[0] == '-' ? 1 : 0;
+	if (line[0] == '-' && ft_isdigit(line[1]) == 0)
+		put_error(asemb); // not valid token
+	while (ft_isdigit(line[i]))
+	{
+		num = num * 10 + line[i] - '0';
+		i++;
+	}
+	*set_int = (line[0] == '-' ? -num : num);
+	return (&line[i]);
+}
+
+char	*set_label(t_asm *asemb, char **set_label, char *line)
+{
+	int len;
+
+	len = 0;
+	while (line[len] && ft_strchr(LABEL_CHARS, line[len]))
+		len++;
+	if (len == 0)
+		put_error(asemb); // not valid token
+	if ((*set_label = ft_strsub(line, 0, len)) == NULL)
+		put_error(asemb); // system error
+	return (&line[len]);
+}
+
+/*
+r12
+%12
+%:label
+12
+:label
+*/
+
+// REG - регистр r 1-16  (code 01) (size 1 bite)
+// DIR - прямой % + число/метка (прямое это само значение) (code 10) (size T_DIR)
+// IND - непрямое число/метка (непрямое это относительный адрес байт) (code 11) (size 2 bite)
+
+/*
+set_arg_reg
+set_arg_numb
+set_arg_label
+*/
+
+
+// char *set_arg_0(t_inst *inst, char *line)
+// {
+	
+// }
+// char *set_arg_1(t_inst *inst, char *line)
+// {
+	
+// }
+// char *set_arg_2(t_inst *inst, char *line)
+// {
+	
+// }
+
+
+
+
 
 int parse_instruction(t_asm *asemb, char *line)
 {
@@ -69,36 +144,23 @@ int parse_instruction(t_asm *asemb, char *line)
 
 	if ((inst = instruction_new()) == NULL)
 		put_error(asemb); // system error
-	asemb->col = ft_skip_chars_i(PARSE_LINE(asemb->col), SPACE_CHARS);
+	line = &(line[ft_skip_chars_i(line, SPACE_CHARS)]);
 
+
+	char *rere;
+	line = set_op(inst, line);
+
+	line = set_label(asemb, &rere, line);
+
+	// line = set_int(asemb, &rere, line);
+
+	printf("---- |%s| ---- |%s| --- |%s| ----\n", inst->op->name, rere, line);
+	
 	inst->line = asemb->parse_line;
 	connect_with_labels(asemb, inst);
 	
 	return (0);
 }
-
-
-// int parse_label(t_asm *asemb, char line)
-// {
-// 	t_label *label;
-// 	char	*label_name;
-// 	int		label_char_i;
-
-// 	asemb->col = ft_skip_chars_i(PARSE_LINE(asemb->col), SPACE_CHARS);
-// 	label_char_i = ft_get_char_i(PARSE_LINE(asemb->col), LABEL_CHAR);
-// 	if ((label_name = ft_strsub(asemb->parse_line, asemb->col, label_char_i)) == NULL)
-// 		put_error(asemb); // system error
-// 	if ((label = label_new(label_name)) == NULL)
-// 		put_error(asemb); // system error // free label_name
-// 	ft_lst_push_back_data(&(asemb->labels_queue), (void*)label);
-// 	asemb->col = label_char_i + 1 + ft_skip_chars_i(PARSE_LINE(label_char_i + 1), SPACE_CHARS);
-// 	if (asemb->parse_line[asemb->col] && is_instruclion(PARSE_LINE(asemb->col)))
-// 		return (parse_instruction(asemb));
-// 	if (asemb->parse_line[asemb->col] != '\0' &&
-// 		is_comment_char(asemb->parse_line[asemb->col]) == 0)
-// 	put_error(asemb); // wrong symbol after label
-// 	return (0);
-// }
 
 
 int parse_label(t_asm *asemb, char *line)
@@ -107,7 +169,7 @@ int parse_label(t_asm *asemb, char *line)
 	char	*label_name;
 	int		char_i;
 
-	line = &(asemb->parse_line[ft_skip_chars_i(asemb->parse_line, SPACE_CHARS)]);
+	line = &(line[ft_skip_chars_i(line, SPACE_CHARS)]);
 	char_i = ft_get_char_i(line, LABEL_CHAR);
 	if ((label_name = ft_strsub(line, 0, char_i)) == NULL)
 		put_error(asemb); // system error
@@ -116,13 +178,10 @@ int parse_label(t_asm *asemb, char *line)
 	ft_lst_push_back_data(&(asemb->labels_queue), (void*)label);
 	line = &(line[char_i + 1]);
 	line = &(line[ft_skip_chars_i(line, SPACE_CHARS)]);
-
-	asemb->col = char_i + 1 + ft_skip_chars_i(PARSE_LINE(char_i + 1), SPACE_CHARS);
-	if (asemb->parse_line[asemb->col] && is_instruclion(PARSE_LINE(asemb->col)))
+	if (line[0] != '\0' && is_instruclion(line))
 		return (parse_instruction(asemb, line));
-	if (asemb->parse_line[asemb->col] != '\0' &&
-		is_comment_char(asemb->parse_line[asemb->col]) == 0)
-	put_error(asemb); // wrong symbol after label
+	if (line[0] != '\0' && is_comment_char(line[0]) == 0)
+		put_error(asemb); // wrong symbol after label
 	return (0);
 }
 
@@ -135,7 +194,6 @@ int parse_file(t_asm *asemb)
 	while ((asemb->gnl = get_next_line(asemb->fd, &(asemb->parse_line))) > 0)
 	{
 		asemb->row++;
-		asemb->col = 0;
 		if (line_type == 0)
 			line_type = get_line_type(asemb->parse_line);
 		if (line_type == EMPTY_LINE || line_type == COMMENT_LINE)

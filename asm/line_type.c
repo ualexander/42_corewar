@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/26 16:28:42 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/02 19:27:37 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/04 14:27:03 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,11 @@ int is_label(char *line)
 {
 	int label_char_i;
 	
-	if ((label_char_i = ft_get_char_i(line, LABEL_CHAR)) == -1 || label_char_i == 0)
+	if ((label_char_i = ft_get_char_i(line, LABEL_CHAR)) == -1 ||
+		label_char_i == 0)
 		return (0);
-	return (ft_in_line_symbols_only(line, label_char_i, LABEL_CHARS) ? label_char_i : 0);
+	return (ft_in_line_symbols_only(line, label_char_i, LABEL_CHARS) ?
+		label_char_i : 0);
 }
 
 int is_instruclion(char *line)
@@ -49,20 +51,19 @@ int is_comment_char(char c)
 
 int get_line_type(char *line)
 {
-	int skip_space_i;
+	line = &(line[ft_skip_chars_i(line, SPACE_CHARS)]);
 
-	skip_space_i = ft_skip_chars_i(line, SPACE_CHARS);
-	if (line[skip_space_i] == '\0')
+	if (line[0] == '\0')
 		return (EMPTY_LINE);
-	if (is_comment_char(line[skip_space_i]))
+	if (is_comment_char(line[0]))
 		return (COMMENT_LINE);
-	if (is_command(&(line[skip_space_i]), NAME_CMD_STRING))
+	if (is_command(line, NAME_CMD_STRING))
 		return (CMD_NAME_START);
-	if (is_command(&(line[skip_space_i]), COMMENT_CMD_STRING))
+	if (is_command(line, COMMENT_CMD_STRING))
 		return (CMD_COMMENT_START);
-	if (is_label(&(line[skip_space_i])))
+	if (is_label(line))
 		return (IS_LABEL);
-	if (is_instruclion(&(line[skip_space_i])))
+	if (is_instruclion(line))
 		return (IS_INSTRUCTION);
 	return (0);
 }

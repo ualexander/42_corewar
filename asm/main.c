@@ -6,16 +6,30 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 17:02:54 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/02 19:26:58 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/04 16:39:10 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "asm.h"
 
 
+/*
+r12
+%12
+%:label
+12
+:label
+*/
+
 // REG - регистр r 1-16  (code 01) (size 1 bite)
 // DIR - прямой % + число/метка (прямое это само значение) (code 10) (size T_DIR)
 // IND - непрямое число/метка (непрямое это относительный адрес байт) (code 11) (size 2 bite)
+
+/*
+set_arg_reg
+set_arg_dir
+set_arg_ind
+*/
 
 
 t_asm	*init_asemb(void)
@@ -28,7 +42,6 @@ t_asm	*init_asemb(void)
 	asemb->gnl = -1;
 	asemb->parse_line = NULL;
 	asemb->row = 0;
-	asemb->col = 0;
 	asemb->magic = COREWAR_EXEC_MAGIC;
 	asemb->prog_size = 0;
 	ft_bzero(asemb->prog_name, PROG_NAME_LENGTH + 1);
@@ -60,12 +73,12 @@ int main(int ac, char **av)
 
 	parse_file(asemb);
 
-	t_lst *cur_lab;
+	// t_lst *cur_lab;
 	
-	while ((cur_lab = ft_lst_pop_front(&(asemb->labels))))
-	{
-		printf("1 = %s - 2 = %s\n", LABEL(cur_lab)->name, LABEL(cur_lab)->inst->line);
-	}
+	// while ((cur_lab = ft_lst_pop_front(&(asemb->labels))))
+	// {
+	// 	printf("1 = %s - 2 = %s\n", LABEL(cur_lab)->name, LABEL(cur_lab)->inst->line);
+	// }
 
 
 
