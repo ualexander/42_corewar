@@ -6,19 +6,22 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/19 17:56:13 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/04 14:34:49 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/04 19:20:30 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "libft.h"
 # include "op.h"
 
-
-# define LABEL(L) ((t_label*)(L->data))
-
-
 #ifndef ASM_H
 # define ASM_H
+
+#define REG_CODE					1
+#define DIR_CODE					2
+#define IND_CODE					3
+
+# define LABEL(L) ((t_label*)(L->data))
+# define INST(L) ((t_inst*)(L->data))
 
 #define EMPTY_LINE 10
 #define COMMENT_LINE 20
@@ -75,7 +78,7 @@ typedef struct		s_inst
 	char			*larg_0;
 	char			*larg_1;
 	char			*larg_2;
-	char			args_codes;
+	unsigned char	args_codes;
 }					t_inst;
 
 typedef struct		s_label

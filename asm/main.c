@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 17:02:54 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/04 16:39:10 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/04 19:35:05 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,8 @@ t_asm	*init_asemb(void)
 	asemb->row = 0;
 	asemb->magic = COREWAR_EXEC_MAGIC;
 	asemb->prog_size = 0;
-	ft_bzero(asemb->prog_name, PROG_NAME_LENGTH + 1);
-	ft_bzero(asemb->comment, COMMENT_LENGTH + 1);
+	ft_bzero((void*)asemb->prog_name, PROG_NAME_LENGTH + 1);
+	ft_bzero((void*)asemb->comment, COMMENT_LENGTH + 1);
 	asemb->labels = NULL;
 	asemb->insts = NULL;
 	return (asemb);
@@ -67,18 +67,25 @@ int main(int ac, char **av)
 	//printf("%s\n", ft_strchr(LABEL_CHARS, '9'));
 
 
-	// printf("=====%i===\n", -3000 % MEM_SIZE);
-
 	asemb->fd = open(av[1], O_RDONLY);
 
 	parse_file(asemb);
 
-	// t_lst *cur_lab;
+	t_inst *cur_inst;
+
+	char re;
+
+	// char  re;
+ 
+	// re = 0;
+
+	// re = re | (IND_CODE << 6);
+	// printf("|%u|\n", re);
 	
-	// while ((cur_lab = ft_lst_pop_front(&(asemb->labels))))
-	// {
-	// 	printf("1 = %s - 2 = %s\n", LABEL(cur_lab)->name, LABEL(cur_lab)->inst->line);
-	// }
+	while ((cur_inst = (t_inst*)ft_lst_pop_front_data(&(asemb->insts))))
+	{
+		printf("op = %s | arg_codes = %u | arg0 = %i, larg0 = %s\n", cur_inst->op->name, cur_inst->args_codes, cur_inst->arg_1, cur_inst->larg_1);
+	}
 
 
 
