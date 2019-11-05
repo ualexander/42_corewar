@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 17:02:54 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/05 15:31:10 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/05 17:34:42 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ r12
 // REG - регистр r 1-16  (code 01) (size 1 bite)
 // DIR - прямой % + число/метка (прямое это само значение) (code 10) (size T_DIR)
 // IND - непрямое число/метка (непрямое это относительный адрес байт) (code 11) (size 2 bite)
+
 
 /*
 set_arg_reg
@@ -82,10 +83,11 @@ int main(int ac, char **av)
 	// re = re | (IND_CODE << 6);
 	// printf("|%u|\n", re);
 	
-	// while ((cur_inst = (t_inst*)ft_lst_pop_front_data(&(asemb->insts))))
-	// {
-	// 	printf("op = %s | arg_codes = %u | arg0 = %i, larg0 = %s\n", cur_inst->op->name, cur_inst->args_codes, cur_inst->arg_1, cur_inst->larg_1);
-	// }
+	while ((cur_inst = (t_inst*)ft_lst_pop_front_data(&(asemb->insts))))
+	{
+		printf("op = %s | arg_codes = %u | arg0 = %i, larg0 = %s | arg1 = %i, larg1 = %s | arg2 = %i, larg2 = %s\n",
+			cur_inst->op->name, cur_inst->args_codes, cur_inst->args[0].arg, cur_inst->args[0].larg, cur_inst->args[1].arg, cur_inst->args[1].larg, cur_inst->args[2].arg, cur_inst->args[2].larg);
+	}
 
 
 
