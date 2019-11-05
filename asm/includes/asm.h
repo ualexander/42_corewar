@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/19 17:56:13 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/05 16:38:32 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/05 18:33:59 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,24 +110,29 @@ static char				*g_type[] = {
 
 	
 
+int put_error(t_asm *asemb);
+
+int is_command(char *line, char *command);
+int is_label(char *line);
+int is_instruclion(char *line);
+int is_comment_char(char c);
 int get_line_type(char *line);
+
 int parse_command_name(t_asm *asemb, int line_type);
 int parse_command_comment(t_asm *asemb, int line_type);
-int get_instruction_i_in_op(char *instruction);
-int is_command(char *line, char *command);
-int is_instruction(char *line);
-int is_instruction_label(char *line);
-int get_arg_type(char *args);
-int parse_file(t_asm *asemb);
 
+int get_instruction_i_in_op(char *instruction);
+int get_arg_type(char *args);
+char	*set_val_numb(t_asm *asemb, int *set_numb, char *line);
+char	*set_val_str(t_asm *asemb, char **set_str, char *line);
+unsigned char modif_arg_codes(unsigned char last_codes,
+	int arg_type, int bite_move);
 
 int parse_instruction(t_asm *asemb, char *line);
 int parse_label(t_asm *asemb, char *line);
+int parse_file(t_asm *asemb);
 
-int put_error(t_asm *asemb);
-
-int is_instruclion(char *line);
-int is_comment_char(char c);
-
+int skip_space(char **line);
+int skip_space_and_sep(char **line);
 
 #endif

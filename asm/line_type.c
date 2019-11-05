@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/26 16:28:42 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/04 14:27:03 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/05 18:31:20 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,7 @@ int is_comment_char(char c)
 
 int get_line_type(char *line)
 {
-	line = &(line[ft_skip_chars_i(line, SPACE_CHARS)]);
-
+	skip_space(&line);
 	if (line[0] == '\0')
 		return (EMPTY_LINE);
 	if (is_comment_char(line[0]))
