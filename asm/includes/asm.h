@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/19 17:56:13 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/05 18:33:59 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/05 18:58:35 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,10 +44,10 @@ typedef struct		s_args
 
 typedef struct		s_inst
 {
-	char			*line;
 	t_op			*op;
 	t_args			args[3];
 	unsigned char	args_codes;
+	int				size;
 	int				row;
 }					t_inst;
 

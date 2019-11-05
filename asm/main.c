@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 17:02:54 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/05 17:34:42 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/05 20:01:32 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,44 @@ t_asm	*init_asemb(void)
 	return (asemb);
 }
 
+
+
+
+// #define REG_CODE					1
+// #define DIR_CODE					2
+// #define IND_CODE					3
+
+	// new->args[0].bite_move = 6;
+	// new->args[1].bite_move = 4;
+	// new->args[2].bite_move = 2;
+
+
+/* ************************************************************************** */
+
+void set_args_size(t_lst *inst)
+{
+	int arg_i;
+
+	while (inst)
+	{
+		arg_i = 0;
+		INST(inst)->size = INST(inst)->op->args_types_code ? 2 : 1;
+		while (arg_i < INST(inst)->op->args_num)
+		{
+			if (((INST(inst)->args_codes >> INST(inst)->args[arg_i].bite_move) & REG_CODE) == REG_CODE)
+				INST(inst)->size += 1;
+			if (((INST(inst)->args_codes >> INST(inst)->args[arg_i].bite_move) & DIR_CODE) == DIR_CODE)
+				INST(inst)->size += INST(inst)->op->t_dir_size;
+			if (((INST(inst)->args_codes >> INST(inst)->args[arg_i].bite_move) & IND_CODE) == IND_CODE)
+				INST(inst)->size += 2;
+			arg_i++;
+		}
+		inst = inst->next;
+	}
+}
+
+
+
 int main(int ac, char **av)
 {
 
@@ -72,9 +110,11 @@ int main(int ac, char **av)
 
 	parse_file(asemb);
 
-	t_inst *cur_inst;
+	set_args_size(asemb->insts);
 
-	char re;
+	t_inst *cur_inst = NULL;
+	t_label *cur_lab = NULL;
+
 
 	// char  re;
  
@@ -85,9 +125,18 @@ int main(int ac, char **av)
 	
 	while ((cur_inst = (t_inst*)ft_lst_pop_front_data(&(asemb->insts))))
 	{
-		printf("op = %s | arg_codes = %u | arg0 = %i, larg0 = %s | arg1 = %i, larg1 = %s | arg2 = %i, larg2 = %s\n",
-			cur_inst->op->name, cur_inst->args_codes, cur_inst->args[0].arg, cur_inst->args[0].larg, cur_inst->args[1].arg, cur_inst->args[1].larg, cur_inst->args[2].arg, cur_inst->args[2].larg);
+		printf("op = %s | size = %i | arg_codes = %u | arg0 = %i, larg0 = %s | arg1 = %i, larg1 = %s | arg2 = %i, larg2 = %s\n",
+			cur_inst->op->name, cur_inst->size, cur_inst->args_codes, cur_inst->args[0].arg, cur_inst->args[0].larg, cur_inst->args[1].arg, cur_inst->args[1].larg, cur_inst->args[2].arg, cur_inst->args[2].larg);
 	}
+
+
+	// while ((cur_lab = (t_label*)ft_lst_pop_front_data(&(asemb->labels))))
+	// {
+	// 	printf("label = %s | ", cur_lab->name);
+	// 	printf("op = %s | arg_codes = %u | arg0 = %i, larg0 = %s | arg1 = %i, larg1 = %s | arg2 = %i, larg2 = %s\n",
+	// 		cur_lab->inst->op->name, cur_lab->inst->args_codes, cur_lab->inst->args[0].arg, cur_lab->inst->args[0].larg,
+	// 		cur_lab->inst->args[1].arg, cur_lab->inst->args[1].larg, cur_lab->inst->args[2].arg, cur_lab->inst->args[2].larg);
+	// }
 
 
 
