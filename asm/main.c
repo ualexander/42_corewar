@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 17:02:54 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/04 19:35:05 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/05 15:31:10 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,10 +82,10 @@ int main(int ac, char **av)
 	// re = re | (IND_CODE << 6);
 	// printf("|%u|\n", re);
 	
-	while ((cur_inst = (t_inst*)ft_lst_pop_front_data(&(asemb->insts))))
-	{
-		printf("op = %s | arg_codes = %u | arg0 = %i, larg0 = %s\n", cur_inst->op->name, cur_inst->args_codes, cur_inst->arg_1, cur_inst->larg_1);
-	}
+	// while ((cur_inst = (t_inst*)ft_lst_pop_front_data(&(asemb->insts))))
+	// {
+	// 	printf("op = %s | arg_codes = %u | arg0 = %i, larg0 = %s\n", cur_inst->op->name, cur_inst->args_codes, cur_inst->arg_1, cur_inst->larg_1);
+	// }
 
 
 

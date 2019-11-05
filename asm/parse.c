@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/29 17:58:42 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/04 20:20:29 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/05 16:26:25 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,17 @@ t_label *label_new(char *name)
 	return (new);
 }
 
-t_inst *instruction_new()
+t_inst *instruction_new(int row)
 {
 	t_inst *new;
 
 	if ((new = (t_inst*)malloc(sizeof(t_inst))) == NULL)
 		return (NULL);
 	ft_bzero((void*)new, sizeof(t_inst));
+	new->row = row;
+	new->args[0].bite_move = 6;
+	new->args[1].bite_move = 4;
+	new->args[2].bite_move = 2;
 	return (new);
 }
 
@@ -100,35 +104,31 @@ r12
 // DIR - прямой % + число/метка (прямое это само значение) (code 10) (size T_DIR)
 // IND - непрямое число/метка (непрямое это относительный адрес байт) (code 11) (size 2 bite)
 
-/*
-set_arg_reg
-set_arg_numb
-set_arg_label
-*/
 
 
-char *set_arg(t_asm *asemb, char *line, int *arg, char **larg)
-{
-	int arg_type;
+// char *set_arg(t_asm *asemb, char *line, int *arg, char **larg)
+// {
+// 	int arg_type;
 
-	arg_type = get_arg_type(line);
-	if (arg_type == T_REG || arg_type == T_DIR)
-		return (set_val_numb(asemb, arg, &line[1]));
-	else if (arg_type == T_IND)
-		return (set_val_numb(asemb, arg, line));
-	else if (arg_type == (T_DIR | T_LAB))
-		return (set_val_str(asemb, larg, &line[2]));
-	else if (arg_type == (T_IND | T_LAB))
-		return (set_val_str(asemb, larg, &line[1]));
-	else
-		put_error(asemb); // not valid token
-	return (NULL);
-}
+// 	arg_type = get_arg_type(line);
+// 	if (arg_type == T_REG || arg_type == T_DIR)
+// 		return (set_val_numb(asemb, arg, &line[1]));
+// 	else if (arg_type == T_IND)
+// 		return (set_val_numb(asemb, arg, line));
+// 	else if (arg_type == (T_DIR | T_LAB))
+// 		return (set_val_str(asemb, larg, &line[2]));
+// 	else if (arg_type == (T_IND | T_LAB))
+// 		return (set_val_str(asemb, larg, &line[1]));
+// 	else
+// 		put_error(asemb); // not valid token
+// 	return (NULL);
+// }
 
 
 
 
-unsigned char modif_arg_codes(unsigned char last_codes, int arg_type, int bite_move)
+unsigned char modif_arg_codes(unsigned char last_codes,
+	int arg_type, int bite_move)
 {
 	if (arg_type & T_REG)
 		return (last_codes | (REG_CODE << bite_move));
@@ -139,54 +139,120 @@ unsigned char modif_arg_codes(unsigned char last_codes, int arg_type, int bite_m
 	return (0);
 }
 
-char *set_arg_0(t_asm *asemb, t_inst *inst, char *line)
+/* ************************************************************************** */
+char *set_arg(t_asm *asemb, t_inst *inst, int arg_i, char *line)
 {
 	int arg_type;
 
 	arg_type = get_arg_type(line);
-	inst->args_codes = modif_arg_codes(inst->args_codes, arg_type, 6);
-	if (arg_type & T_LAB)
-		return (set_arg(asemb, line, 0, &(inst->larg_0)));
-	else
-		return (set_arg(asemb, line, &(inst->arg_0), NULL));
-}
-
-char *set_arg_1(t_asm *asemb, t_inst *inst, char *line)
-{
-	int arg_type;
-
-	arg_type = get_arg_type(line);
-	inst->args_codes = modif_arg_codes(inst->args_codes, arg_type, 4);
-	if (arg_type & T_LAB)
-		return (set_arg(asemb, line, 0, &(inst->larg_1)));
-	else
-		return (set_arg(asemb, line, &(inst->arg_1), NULL));
+	if ((arg_type & inst->op->args_types[arg_i]) == 0)
+		put_error(asemb); // not valid token
+	inst->args_codes = modif_arg_codes(inst->args_codes,
+		arg_type, inst->args[arg_i].bite_move);
+	if (arg_type == T_REG || arg_type == T_DIR)
+		return (set_val_numb(asemb, &(inst->args[arg_i].arg), &line[1]));
+	if (arg_type == T_IND)
+		return (set_val_numb(asemb, &(inst->args[arg_i].arg), line));
+	if (arg_type == (T_DIR | T_LAB))
+		return (set_val_str(asemb, &(inst->args[arg_i].larg), &line[2]));
+	if (arg_type == (T_IND | T_LAB))
+		return (set_val_str(asemb, &(inst->args[arg_i].larg), &line[1]));
+	return (NULL);
 }
 
 
+// char *set_arg_0(t_asm *asemb, t_inst *inst, char *line)
+// {
+// 	int arg_type;
 
+// 	arg_type = get_arg_type(line);
+// 	inst->args_codes = modif_arg_codes(inst->args_codes, arg_type, 6);
+// 	if (arg_type & T_LAB)
+// 		return (set_arg(asemb, line, 0, &(inst->larg_0)));
+// 	else
+// 		return (set_arg(asemb, line, &(inst->arg_0), NULL));
+// }
+
+// char *set_arg_1(t_asm *asemb, t_inst *inst, char *line)
+// {
+// 	int arg_type;
+
+// 	arg_type = get_arg_type(line);
+// 	inst->args_codes = modif_arg_codes(inst->args_codes, arg_type, 4);
+// 	if (arg_type & T_LAB)
+// 		return (set_arg(asemb, line, 0, &(inst->larg_1)));
+// 	else
+// 		return (set_arg(asemb, line, &(inst->arg_1), NULL));
+// }
+
+// char *set_arg_2(t_asm *asemb, t_inst *inst, char *line)
+// {
+// 	int arg_type;
+
+// 	arg_type = get_arg_type(line);
+// 	inst->args_codes = modif_arg_codes(inst->args_codes, arg_type, 2);
+// 	if (arg_type & T_LAB)
+// 		return (set_arg(asemb, line, 0, &(inst->larg_2)));
+// 	else
+// 		return (set_arg(asemb, line, &(inst->arg_2), NULL));
+// }
+
+
+// int check_last(t_asm *asemb, char *line)
+// {
+// 	if (get_arg_type(line) != 0)
+// 		put_error(asemb); // too much args
+// 	if (line[0] != '\0' && is_comment_char(line[0]) == 0)
+// 		put_error(asemb); // not valid token
+// }
 
 
 int parse_instruction(t_asm *asemb, char *line)
 {
 	t_inst *inst;
+	int arg_i;
 
-	if ((inst = instruction_new()) == NULL)
+	
+	if ((inst = instruction_new(asemb->row)) == NULL)
 		put_error(asemb); // system error
+	arg_i = 0;
 	line = &(line[ft_skip_chars_i(line, SPACE_CHARS)]);
-
-
-	char *rere;
 	line = set_op(asemb, inst, line);
 	line = &(line[ft_skip_chars_i(line, SPACE_CHARS)]);
 
-	line = set_arg_0(asemb, inst, line);
+	while (arg_i < inst->op->args_num)
+	{
+		line = set_arg(asemb, inst, arg_i, line);
+		line = &(line[ft_skip_chars_i(line, SPACE_CHARS)]);
+		printf("arg codes = %u | arg = %i | larg = %s || ", inst->args_codes, inst->args[arg_i].arg, inst->args[arg_i].larg);
+		arg_i++;
+	}
+	printf("\n");
+	
 
-	line = &(line[ft_skip_chars_i(line, SPACE_CHARS)]);
 
-	line = set_arg_1(asemb, inst, line);
 
-	printf("|%s|\n", line);
+
+
+	// while (i < inst->op->args_num)
+	// {
+	// 	line = set_arg(asemb, line, &(inst->args[i]), &(inst->args_codes));
+	// 	line = &(line[ft_skip_chars_i(line, SPACE_CHARS)]);
+	// 	printf("arg codes = %u | arg0 = %i | larg0 = %s\n", inst->args_codes, inst->args[0].arg, inst->args[0].larg);
+	// 	i++;
+	// }
+
+
+
+	
+
+	// line = set_arg_1(asemb, inst, line);
+	// line = &(line[ft_skip_chars_i(line, SPACE_CHARS)]);
+
+	// line = set_arg_2(asemb, inst, line);
+	// line = &(line[ft_skip_chars_i(line, SPACE_CHARS)]);
+
+	
 
 
 
