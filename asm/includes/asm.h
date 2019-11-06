@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/19 17:56:13 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/06 16:37:12 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/06 19:09:28 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 
 # define A_REG_SIZE 1
 # define A_ARGS_SIZE 1
+# define A_IND_SIZE 2
 
 # define LABEL(L) ((t_label*)(L->data))
 # define INST(L) ((t_inst*)(L->data))
@@ -70,7 +71,7 @@ typedef struct		s_asm
 	char			*parse_line;
 	unsigned int	row;
  	unsigned int	magic;
-	unsigned int	prog_size;
+	unsigned int	exec_code_size;
  	char			prog_name[PROG_NAME_LENGTH + 1];
  	char			comment[COMMENT_LENGTH + 1];
 	t_lst			*labels;

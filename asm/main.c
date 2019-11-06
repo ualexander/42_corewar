@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 17:02:54 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/06 17:05:46 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/06 20:05:58 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ t_asm	*init_asemb(void)
 	asemb->parse_line = NULL;
 	asemb->row = 0;
 	asemb->magic = COREWAR_EXEC_MAGIC;
-	asemb->prog_size = 0;
+	asemb->exec_code_size = 0;
 	ft_bzero((void*)asemb->prog_name, PROG_NAME_LENGTH + 1);
 	ft_bzero((void*)asemb->comment, COMMENT_LENGTH + 1);
 	asemb->labels = NULL;
@@ -69,7 +69,7 @@ t_asm	*init_asemb(void)
 
 /* ************************************************************************** */
 
-void set_instruction_size(t_lst *inst)
+void set_instruction_size(t_asm *asemb, t_lst *inst)
 {
 	int arg_i;
 	unsigned int cur_bit_pos;
@@ -82,19 +82,32 @@ void set_instruction_size(t_lst *inst)
 		INST(inst)->bit_size = INST(inst)->op->args_types_code ? A_REG_SIZE + A_ARGS_SIZE : A_REG_SIZE;
 		while (arg_i < INST(inst)->op->args_num)
 		{
-			if (((INST(inst)->args_codes >> INST(inst)->args[arg_i].bit_move) & REG_CODE) == REG_CODE)
-				INST(inst)->bit_size += 1;
-			if (((INST(inst)->args_codes >> INST(inst)->args[arg_i].bit_move) & DIR_CODE) == DIR_CODE)
-				INST(inst)->bit_size += INST(inst)->op->t_dir_size;
 			if (((INST(inst)->args_codes >> INST(inst)->args[arg_i].bit_move) & IND_CODE) == IND_CODE)
-				INST(inst)->bit_size += 2;
+				INST(inst)->bit_size += A_IND_SIZE;
+			else if (((INST(inst)->args_codes >> INST(inst)->args[arg_i].bit_move) & REG_CODE) == REG_CODE)
+				INST(inst)->bit_size += A_REG_SIZE;
+			else if (((INST(inst)->args_codes >> INST(inst)->args[arg_i].bit_move) & DIR_CODE) == DIR_CODE)
+				INST(inst)->bit_size += INST(inst)->op->t_dir_size;
 			arg_i++;
 		}
 		cur_bit_pos += INST(inst)->bit_size;
+		if (inst->next == NULL)
+			asemb->exec_code_size = cur_bit_pos;
 		inst = inst->next;
 	}
 }
 
+void file_put_arg(int fd, int buf, int byts)
+{
+	int data;
+
+	while (byts)
+	{
+		data = buf >> (8 * (byts - 1));
+		write(fd, &(data), 1);
+		byts--;
+	}
+}
 
 t_label *find_label(t_lst *labels, char *name)
 {
@@ -130,6 +143,47 @@ void convert_labels_to_args(t_asm *asemb, t_lst *inst)
 	}
 }
 
+
+
+
+void put_exec_code(t_lst *inst, int fd)
+{
+	int arg_i;
+	while (inst)
+	{
+		arg_i = 0;
+		file_put_arg(fd, INST(inst)->op->code, 1);
+
+		if (INST(inst)->op->args_types_code)
+				file_put_arg(fd, INST(inst)->args_codes, 1);
+
+		while (arg_i < INST(inst)->op->args_num)
+		{
+
+			
+			if (((INST(inst)->args_codes >> INST(inst)->args[arg_i].bit_move) & IND_CODE) == IND_CODE)
+			{
+				file_put_arg(fd, INST(inst)->args[arg_i].arg, A_IND_SIZE);
+			}
+				
+			else if (((INST(inst)->args_codes >> INST(inst)->args[arg_i].bit_move) & REG_CODE) == REG_CODE)
+			{
+				file_put_arg(fd, INST(inst)->args[arg_i].arg, A_REG_SIZE);
+			}
+				
+			else if (((INST(inst)->args_codes >> INST(inst)->args[arg_i].bit_move) & DIR_CODE) == DIR_CODE)
+			{
+				file_put_arg(fd, INST(inst)->args[arg_i].arg, INST(inst)->op->t_dir_size);
+			}
+			arg_i++;
+		}
+		inst = inst->next;
+	}
+}
+
+
+
+
 int main(int ac, char **av)
 {
 
@@ -150,8 +204,9 @@ int main(int ac, char **av)
 
 	parse_file(asemb);
 
-	set_instruction_size(asemb->insts);
+	set_instruction_size(asemb, asemb->insts);
 	convert_labels_to_args(asemb, asemb->insts);
+	
 
 	t_inst *cur_inst = NULL;
 	t_label *cur_lab = NULL;
@@ -164,20 +219,49 @@ int main(int ac, char **av)
 	// re = re | (IND_CODE << 6);
 	// printf("|%u|\n", re);
 
-	// int ffd = open("0rere", O_RDWR, O_APPEND);
-	
-	// while ((cur_inst = (t_inst*)ft_lst_pop_front_data(&(asemb->insts))))
-	// {
-	// 	printf("op = %s | bit_size = %i | bit_pos = %i | arg_codes = %u | arg0 = %i, larg0 = %s | arg1 = %i, larg1 = %s | arg2 = %i, larg2 = %s\n",
-	// 		cur_inst->op->name, cur_inst->bit_size, cur_inst->bit_pos, cur_inst->args_codes, cur_inst->args[0].arg, cur_inst->args[0].larg, cur_inst->args[1].arg, cur_inst->args[1].larg, cur_inst->args[2].arg, cur_inst->args[2].larg);
-	// 	write(ffd, &(cur_inst->args[0].arg), 4);
-	// }
-
-
-	printf("|%s|\n", asemb->prog_name);
+	int ffd = open("0rere", O_RDWR);
 	
 
-	
+
+
+
+	printf("exec_code_size = %i\n", asemb->exec_code_size);
+
+	file_put_arg(ffd, asemb->magic, 4);
+	write(ffd, &(asemb->prog_name), 128);
+	file_put_arg(ffd, 0, 4);
+	file_put_arg(ffd, asemb->exec_code_size, 4);
+	write(ffd, &(asemb->comment), 2048);
+	file_put_arg(ffd, 0, 4);
+
+	put_exec_code(asemb->insts, ffd);
+
+
+		while ((cur_inst = (t_inst*)ft_lst_pop_front_data(&(asemb->insts))))
+	{
+		printf("op = %s | bit_size = %i | bit_pos = %i | arg_codes = %u | arg0 = %i, larg0 = %s | arg1 = %i, larg1 = %s | arg2 = %i, larg2 = %s\n",
+			cur_inst->op->name, cur_inst->bit_size, cur_inst->bit_pos, cur_inst->args_codes, cur_inst->args[0].arg, cur_inst->args[0].larg, cur_inst->args[1].arg, cur_inst->args[1].larg, cur_inst->args[2].arg, cur_inst->args[2].larg);
+		// file_put_arg(ffd, (cur_inst->args[0].arg), 1);
+		// write(ffd, &(cur_inst->args[0].arg), 4);
+	}
+
+
+	// 989
+	// 1002
+
+	// !!! 13
+
+
+
+	// Magic header - 4
+	// Champion name - 128
+	// NULL - 4
+	// Champion exec code size - 4
+	// Champion comment - 2048
+	// NULL - 4
+	// Champion exec code --||--
+
+
 
 
 
