@@ -6,15 +6,19 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/19 17:56:13 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/05 18:58:35 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/06 16:37:12 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "libft.h"
 # include "corewar.h"
+# include <limits.h>
 
 #ifndef ASM_H
 # define ASM_H
+
+# define A_REG_SIZE 1
+# define A_ARGS_SIZE 1
 
 # define LABEL(L) ((t_label*)(L->data))
 # define INST(L) ((t_inst*)(L->data))
@@ -39,7 +43,7 @@ typedef struct		s_args
 {
 	int				arg;
 	char			*larg;
-	int				bite_move;
+	int				bit_move;
 }					t_args;
 
 typedef struct		s_inst
@@ -47,8 +51,9 @@ typedef struct		s_inst
 	t_op			*op;
 	t_args			args[3];
 	unsigned char	args_codes;
-	int				size;
-	int				row;
+	unsigned int	bit_size;
+	unsigned int	bit_pos;
+	unsigned int	row;
 }					t_inst;
 
 typedef struct		s_label
@@ -63,14 +68,14 @@ typedef struct		s_asm
 	int				fd;
 	int				gnl;
 	char			*parse_line;
-	int				row;
+	unsigned int	row;
  	unsigned int	magic;
 	unsigned int	prog_size;
  	char			prog_name[PROG_NAME_LENGTH + 1];
  	char			comment[COMMENT_LENGTH + 1];
 	t_lst			*labels;
-	t_lst			*insts;
 	t_lst			*labels_queue;
+	t_lst			*insts;
 }					t_asm;
 
 
@@ -126,7 +131,7 @@ int get_arg_type(char *args);
 char	*set_val_numb(t_asm *asemb, int *set_numb, char *line);
 char	*set_val_str(t_asm *asemb, char **set_str, char *line);
 unsigned char modif_arg_codes(unsigned char last_codes,
-	int arg_type, int bite_move);
+	int arg_type, int bit_move);
 
 int parse_instruction(t_asm *asemb, char *line);
 int parse_label(t_asm *asemb, char *line);

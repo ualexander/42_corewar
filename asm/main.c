@@ -6,11 +6,13 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 17:02:54 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/05 20:01:32 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/06 17:05:46 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "asm.h"
+
+# include <limits.h>
 
 
 /*
@@ -21,9 +23,9 @@ r12
 :label
 */
 
-// REG - регистр r 1-16  (code 01) (size 1 bite)
+// REG - регистр r 1-16  (code 01) (size 1 bit)
 // DIR - прямой % + число/метка (прямое это само значение) (code 10) (size T_DIR)
-// IND - непрямое число/метка (непрямое это относительный адрес байт) (code 11) (size 2 bite)
+// IND - непрямое число/метка (непрямое это относительный адрес байт) (code 11) (size 2 bit)
 
 
 /*
@@ -48,6 +50,7 @@ t_asm	*init_asemb(void)
 	ft_bzero((void*)asemb->prog_name, PROG_NAME_LENGTH + 1);
 	ft_bzero((void*)asemb->comment, COMMENT_LENGTH + 1);
 	asemb->labels = NULL;
+	asemb->labels_queue = NULL;
 	asemb->insts = NULL;
 	return (asemb);
 }
@@ -59,36 +62,73 @@ t_asm	*init_asemb(void)
 // #define DIR_CODE					2
 // #define IND_CODE					3
 
-	// new->args[0].bite_move = 6;
-	// new->args[1].bite_move = 4;
-	// new->args[2].bite_move = 2;
+	// new->args[0].bit_move = 6;
+	// new->args[1].bit_move = 4;
+	// new->args[2].bit_move = 2;
 
 
 /* ************************************************************************** */
 
-void set_args_size(t_lst *inst)
+void set_instruction_size(t_lst *inst)
 {
 	int arg_i;
+	unsigned int cur_bit_pos;
 
+	cur_bit_pos = 0;
 	while (inst)
 	{
 		arg_i = 0;
-		INST(inst)->size = INST(inst)->op->args_types_code ? 2 : 1;
+		INST(inst)->bit_pos = cur_bit_pos;
+		INST(inst)->bit_size = INST(inst)->op->args_types_code ? A_REG_SIZE + A_ARGS_SIZE : A_REG_SIZE;
 		while (arg_i < INST(inst)->op->args_num)
 		{
-			if (((INST(inst)->args_codes >> INST(inst)->args[arg_i].bite_move) & REG_CODE) == REG_CODE)
-				INST(inst)->size += 1;
-			if (((INST(inst)->args_codes >> INST(inst)->args[arg_i].bite_move) & DIR_CODE) == DIR_CODE)
-				INST(inst)->size += INST(inst)->op->t_dir_size;
-			if (((INST(inst)->args_codes >> INST(inst)->args[arg_i].bite_move) & IND_CODE) == IND_CODE)
-				INST(inst)->size += 2;
+			if (((INST(inst)->args_codes >> INST(inst)->args[arg_i].bit_move) & REG_CODE) == REG_CODE)
+				INST(inst)->bit_size += 1;
+			if (((INST(inst)->args_codes >> INST(inst)->args[arg_i].bit_move) & DIR_CODE) == DIR_CODE)
+				INST(inst)->bit_size += INST(inst)->op->t_dir_size;
+			if (((INST(inst)->args_codes >> INST(inst)->args[arg_i].bit_move) & IND_CODE) == IND_CODE)
+				INST(inst)->bit_size += 2;
 			arg_i++;
 		}
+		cur_bit_pos += INST(inst)->bit_size;
 		inst = inst->next;
 	}
 }
 
 
+t_label *find_label(t_lst *labels, char *name)
+{
+	while (labels)
+	{
+		if (ft_strcmp(LABEL(labels)->name, name) == 0)
+			return (LABEL(labels));
+		labels = labels->next;
+	}
+	return (NULL);
+}
+
+void convert_labels_to_args(t_asm *asemb, t_lst *inst)
+{
+	int arg_i;
+
+	t_label *label;
+	while (inst)
+	{
+		arg_i = 0;
+		while (arg_i < INST(inst)->op->args_num)
+		{
+			if (INST(inst)->args[arg_i].larg)
+			{
+				label = find_label(asemb->labels, INST(inst)->args[arg_i].larg);
+				if (label == NULL)
+					put_error(asemb); // label not find
+				INST(inst)->args[arg_i].arg = label->inst->bit_pos - INST(inst)->bit_pos;
+			}
+			arg_i++;
+		}
+		inst = inst->next;
+	}
+}
 
 int main(int ac, char **av)
 {
@@ -110,7 +150,8 @@ int main(int ac, char **av)
 
 	parse_file(asemb);
 
-	set_args_size(asemb->insts);
+	set_instruction_size(asemb->insts);
+	convert_labels_to_args(asemb, asemb->insts);
 
 	t_inst *cur_inst = NULL;
 	t_label *cur_lab = NULL;
@@ -122,12 +163,44 @@ int main(int ac, char **av)
 
 	// re = re | (IND_CODE << 6);
 	// printf("|%u|\n", re);
+
+	// int ffd = open("0rere", O_RDWR, O_APPEND);
 	
-	while ((cur_inst = (t_inst*)ft_lst_pop_front_data(&(asemb->insts))))
-	{
-		printf("op = %s | size = %i | arg_codes = %u | arg0 = %i, larg0 = %s | arg1 = %i, larg1 = %s | arg2 = %i, larg2 = %s\n",
-			cur_inst->op->name, cur_inst->size, cur_inst->args_codes, cur_inst->args[0].arg, cur_inst->args[0].larg, cur_inst->args[1].arg, cur_inst->args[1].larg, cur_inst->args[2].arg, cur_inst->args[2].larg);
-	}
+	// while ((cur_inst = (t_inst*)ft_lst_pop_front_data(&(asemb->insts))))
+	// {
+	// 	printf("op = %s | bit_size = %i | bit_pos = %i | arg_codes = %u | arg0 = %i, larg0 = %s | arg1 = %i, larg1 = %s | arg2 = %i, larg2 = %s\n",
+	// 		cur_inst->op->name, cur_inst->bit_size, cur_inst->bit_pos, cur_inst->args_codes, cur_inst->args[0].arg, cur_inst->args[0].larg, cur_inst->args[1].arg, cur_inst->args[1].larg, cur_inst->args[2].arg, cur_inst->args[2].larg);
+	// 	write(ffd, &(cur_inst->args[0].arg), 4);
+	// }
+
+
+	printf("|%s|\n", asemb->prog_name);
+	
+
+	
+
+
+
+	
+
+	long int num1 = 45465465465465;
+
+
+	// num1 = num1 * 10;
+
+
+	// int num2;
+
+
+	// num2 = ((int)num1);
+
+	// // num1 += 1;
+
+	// // num1 
+
+	// printf("%i\n", num2);
+
+
 
 
 	// while ((cur_lab = (t_label*)ft_lst_pop_front_data(&(asemb->labels))))

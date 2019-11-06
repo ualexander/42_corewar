@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 18:20:08 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/05 18:29:45 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/06 12:35:38 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,9 @@ static t_inst *instruction_new(int row)
 		return (NULL);
 	ft_bzero((void*)new, sizeof(t_inst));
 	new->row = row;
-	new->args[0].bite_move = 6;
-	new->args[1].bite_move = 4;
-	new->args[2].bite_move = 2;
+	new->args[0].bit_move = 6;
+	new->args[1].bit_move = 4;
+	new->args[2].bit_move = 2;
 	return (new);
 }
 
@@ -44,7 +44,7 @@ static char *set_arg(t_asm *asemb, t_inst *inst, int arg_i, char *line)
 	if ((arg_type & inst->op->args_types[arg_i]) == 0)
 		put_error(asemb); // not valid token
 	inst->args_codes = modif_arg_codes(inst->args_codes,
-		arg_type, inst->args[arg_i].bite_move);
+		arg_type, inst->args[arg_i].bit_move);
 	if (arg_type == T_REG || arg_type == T_DIR)
 		return (set_val_numb(asemb, &(inst->args[arg_i].arg), &line[1]));
 	if (arg_type == T_IND)

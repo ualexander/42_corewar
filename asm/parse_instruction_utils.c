@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 18:23:06 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/05 18:30:20 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/06 17:04:37 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,11 +50,13 @@ int get_arg_type(char *args)
 
 char	*set_val_numb(t_asm *asemb, int *set_numb, char *line)
 {
-	int	num;
+	unsigned long int num;
 	int	i;
+	int overflow;
 
 	num = 0;
 	i = line[0] == '-' ? 1 : 0;
+	overflow = 0;
 	if ((line[0] == '-' && ft_isdigit(line[1]) == 0) ||
 		(line[0] != '-' && ft_isdigit(line[0]) == 0))
 		put_error(asemb); // not valid token
@@ -62,8 +64,15 @@ char	*set_val_numb(t_asm *asemb, int *set_numb, char *line)
 	{
 		num = num * 10 + line[i] - '0';
 		i++;
+		if (line[0] == '-' && num > LONG_MAX)
+			overflow = -1;
+		else if (num > LONG_MAX)
+			overflow = 1;
 	}
-	*set_numb = (line[0] == '-' ? -num : num);
+	if (overflow != 0)
+		*set_numb = overflow == -1 ? 0x0 : 0xffffffff;
+	else
+		*set_numb = (int)(line[0] == '-' ? -num : num);
 	return (&line[i]);
 }
 
@@ -82,13 +91,13 @@ char	*set_val_str(t_asm *asemb, char **set_str, char *line)
 }
 
 unsigned char modif_arg_codes(unsigned char last_codes,
-	int arg_type, int bite_move)
+	int arg_type, int bit_move)
 {
 	if (arg_type & T_REG)
-		return (last_codes | (REG_CODE << bite_move));
+		return (last_codes | (REG_CODE << bit_move));
 	if (arg_type & T_DIR)
-		return (last_codes | (DIR_CODE << bite_move));
+		return (last_codes | (DIR_CODE << bit_move));
 	if (arg_type & T_IND)
-		return (last_codes | (IND_CODE << bite_move));
+		return (last_codes | (IND_CODE << bit_move));
 	return (0);
 }
