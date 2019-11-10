@@ -6,11 +6,12 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/19 17:56:13 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/10 16:53:50 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/10 18:18:00 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "libft.h"
+# include "ft_printf.h"
 # include "corewar.h"
 # include <limits.h>
 
@@ -44,6 +45,7 @@ typedef struct		s_arg
 {
 	int				arg;
 	char			*larg;
+	int				size;
 	int				bit_move;
 }					t_arg;
 
@@ -114,8 +116,6 @@ static char				*g_type[] = {
 };
 */
 
-	
-
 int put_error(t_asm *asemb);
 
 int is_command(char *line, char *command);
@@ -140,5 +140,11 @@ int parse_file(t_asm *asemb);
 
 int skip_space(char **line);
 int skip_space_and_sep(char **line);
+
+void set_instruction_size(t_asm *asemb, t_lst *inst);
+void convert_labels_to_args(t_asm *asemb, t_lst *inst);
+
+void file_put_numb(int fd, int val, int byts);
+void file_put_exec_code(t_lst *inst, int fd);
 
 #endif

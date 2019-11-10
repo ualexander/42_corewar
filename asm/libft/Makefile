@@ -6,7 +6,7 @@
 #    By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/02/11 18:03:01 by vsanta            #+#    #+#              #
-#    Updated: 2019/09/29 15:53:41 by vsanta           ###   ########.fr        #
+#    Updated: 2019/11/10 18:16:25 by vsanta           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -51,8 +51,8 @@ SRC_NAME	= ft_abs.c ft_lst_iter.c ft_putchar.c ft_strlen.c \
 OBJ_NAME	= $(SRC_NAME:.c=.o)
 
 SRC			= $(addprefix $(SRC_DIR), $(SRC_NAME))
-HEADER		= $(addprefix $(INC_DIR), $(HEADER_NAME))
 OBJ			= $(addprefix $(OBJ_DIR), $(OBJ_NAME))
+HEADER		= $(addprefix $(INC_DIR), $(HEADER_NAME))
 
 FLAGS 		= -Wall -Wextra -Werror
 
