@@ -6,34 +6,11 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 17:02:54 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/06 20:05:58 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/10 17:07:18 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "asm.h"
-
-# include <limits.h>
-
-
-/*
-r12
-%12
-%:label
-12
-:label
-*/
-
-// REG - регистр r 1-16  (code 01) (size 1 bit)
-// DIR - прямой % + число/метка (прямое это само значение) (code 10) (size T_DIR)
-// IND - непрямое число/метка (непрямое это относительный адрес байт) (code 11) (size 2 bit)
-
-
-/*
-set_arg_reg
-set_arg_dir
-set_arg_ind
-*/
-
 
 t_asm	*init_asemb(void)
 {
@@ -56,18 +33,17 @@ t_asm	*init_asemb(void)
 }
 
 
+int get_arg_size(unsigned char args_codes, t_arg arg, t_op *op)
+{
+	if (((args_codes >> arg.bit_move) & IND_CODE) == IND_CODE)
+		return (A_IND_SIZE);
+	else if (((args_codes >> arg.bit_move) & REG_CODE) == REG_CODE)
+		return (A_REG_SIZE);
+	else if (((args_codes >> arg.bit_move) & DIR_CODE) == DIR_CODE)
+		return (op->t_dir_size);
+	return (0);
+}
 
-
-// #define REG_CODE					1
-// #define DIR_CODE					2
-// #define IND_CODE					3
-
-	// new->args[0].bit_move = 6;
-	// new->args[1].bit_move = 4;
-	// new->args[2].bit_move = 2;
-
-
-/* ************************************************************************** */
 
 void set_instruction_size(t_asm *asemb, t_lst *inst)
 {
@@ -79,33 +55,19 @@ void set_instruction_size(t_asm *asemb, t_lst *inst)
 	{
 		arg_i = 0;
 		INST(inst)->bit_pos = cur_bit_pos;
-		INST(inst)->bit_size = INST(inst)->op->args_types_code ? A_REG_SIZE + A_ARGS_SIZE : A_REG_SIZE;
+		INST(inst)->bit_size = INST(inst)->op->args_types_code ?
+			A_REG_SIZE + A_ARGS_SIZE : A_REG_SIZE;
 		while (arg_i < INST(inst)->op->args_num)
 		{
-			if (((INST(inst)->args_codes >> INST(inst)->args[arg_i].bit_move) & IND_CODE) == IND_CODE)
-				INST(inst)->bit_size += A_IND_SIZE;
-			else if (((INST(inst)->args_codes >> INST(inst)->args[arg_i].bit_move) & REG_CODE) == REG_CODE)
-				INST(inst)->bit_size += A_REG_SIZE;
-			else if (((INST(inst)->args_codes >> INST(inst)->args[arg_i].bit_move) & DIR_CODE) == DIR_CODE)
-				INST(inst)->bit_size += INST(inst)->op->t_dir_size;
+			INST(inst)->bit_size +=
+				get_arg_size(INST(inst)->args_codes,
+					INST(inst)->args[arg_i], INST(inst)->op);
 			arg_i++;
 		}
 		cur_bit_pos += INST(inst)->bit_size;
 		if (inst->next == NULL)
 			asemb->exec_code_size = cur_bit_pos;
 		inst = inst->next;
-	}
-}
-
-void file_put_arg(int fd, int buf, int byts)
-{
-	int data;
-
-	while (byts)
-	{
-		data = buf >> (8 * (byts - 1));
-		write(fd, &(data), 1);
-		byts--;
 	}
 }
 
@@ -132,57 +94,18 @@ void convert_labels_to_args(t_asm *asemb, t_lst *inst)
 		{
 			if (INST(inst)->args[arg_i].larg)
 			{
-				label = find_label(asemb->labels, INST(inst)->args[arg_i].larg);
+				label =
+					find_label(asemb->labels, INST(inst)->args[arg_i].larg);
 				if (label == NULL)
 					put_error(asemb); // label not find
-				INST(inst)->args[arg_i].arg = label->inst->bit_pos - INST(inst)->bit_pos;
+				INST(inst)->args[arg_i].arg =
+					label->inst->bit_pos - INST(inst)->bit_pos;
 			}
 			arg_i++;
 		}
 		inst = inst->next;
 	}
 }
-
-
-
-
-void put_exec_code(t_lst *inst, int fd)
-{
-	int arg_i;
-	while (inst)
-	{
-		arg_i = 0;
-		file_put_arg(fd, INST(inst)->op->code, 1);
-
-		if (INST(inst)->op->args_types_code)
-				file_put_arg(fd, INST(inst)->args_codes, 1);
-
-		while (arg_i < INST(inst)->op->args_num)
-		{
-
-			
-			if (((INST(inst)->args_codes >> INST(inst)->args[arg_i].bit_move) & IND_CODE) == IND_CODE)
-			{
-				file_put_arg(fd, INST(inst)->args[arg_i].arg, A_IND_SIZE);
-			}
-				
-			else if (((INST(inst)->args_codes >> INST(inst)->args[arg_i].bit_move) & REG_CODE) == REG_CODE)
-			{
-				file_put_arg(fd, INST(inst)->args[arg_i].arg, A_REG_SIZE);
-			}
-				
-			else if (((INST(inst)->args_codes >> INST(inst)->args[arg_i].bit_move) & DIR_CODE) == DIR_CODE)
-			{
-				file_put_arg(fd, INST(inst)->args[arg_i].arg, INST(inst)->op->t_dir_size);
-			}
-			arg_i++;
-		}
-		inst = inst->next;
-	}
-}
-
-
-
 
 int main(int ac, char **av)
 {

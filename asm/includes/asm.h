@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/19 17:56:13 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/06 19:09:28 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/10 16:53:50 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,17 +40,17 @@
 #define CMD_NUMBERS 16
 
 
-typedef struct		s_args
+typedef struct		s_arg
 {
 	int				arg;
 	char			*larg;
 	int				bit_move;
-}					t_args;
+}					t_arg;
 
 typedef struct		s_inst
 {
 	t_op			*op;
-	t_args			args[3];
+	t_arg			args[3];
 	unsigned char	args_codes;
 	unsigned int	bit_size;
 	unsigned int	bit_pos;
