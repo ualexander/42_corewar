@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/10 16:57:48 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/10 17:43:58 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/18 16:46:17 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ void file_put_exec_code(t_lst *inst, int fd)
 		file_put_numb(fd, INST(inst)->op->code, 1);
 		if (INST(inst)->op->args_types_code)
 				file_put_numb(fd, INST(inst)->args_codes, 1);
-
 		while (arg_i < INST(inst)->op->args_num)
 		{
 			file_put_numb(fd, INST(inst)->args[arg_i].arg,

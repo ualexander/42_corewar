@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 18:23:06 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/06 17:04:37 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/18 20:11:50 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ char	*set_val_numb(t_asm *asemb, int *set_numb, char *line)
 	overflow = 0;
 	if ((line[0] == '-' && ft_isdigit(line[1]) == 0) ||
 		(line[0] != '-' && ft_isdigit(line[0]) == 0))
-		put_error(asemb); // not valid token
+		put_error(asemb, 1, line); // Lexical error
 	while (ft_isdigit(line[i]))
 	{
 		num = num * 10 + line[i] - '0';
@@ -84,9 +84,9 @@ char	*set_val_str(t_asm *asemb, char **set_str, char *line)
 	while (line[len] && ft_strchr(LABEL_CHARS, line[len]))
 		len++;
 	if (len == 0)
-		put_error(asemb); // not valid token
+		put_error(asemb, 1, line); // Lexical error
 	if ((*set_str = ft_strsub(line, 0, len)) == NULL)
-		put_error(asemb); // system error
+		put_error(asemb, 1, line); // system error
 	return (&line[len]);
 }
 

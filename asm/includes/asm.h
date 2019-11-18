@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/19 17:56:13 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/10 18:18:00 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/18 20:11:24 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,10 @@
 #define SPACE_CHARS " \t"
 #define REG_CHAR 'r'
 #define CMD_NUMBERS 16
+
+#define IS_NEW_LINE 1
+#define MAX_REG 99
+
 
 
 typedef struct		s_arg
@@ -116,7 +120,7 @@ static char				*g_type[] = {
 };
 */
 
-int put_error(t_asm *asemb);
+void put_error(t_asm *asemb, int err_n, char *line);
 
 int is_command(char *line, char *command);
 int is_label(char *line);
@@ -136,15 +140,16 @@ unsigned char modif_arg_codes(unsigned char last_codes,
 
 int parse_instruction(t_asm *asemb, char *line);
 int parse_label(t_asm *asemb, char *line);
-int parse_file(t_asm *asemb);
+void parse_file(t_asm *asemb);
 
 int skip_space(char **line);
 int skip_space_and_sep(char **line);
 
-void set_instruction_size(t_asm *asemb, t_lst *inst);
+void set_instructions_size(t_asm *asemb, t_lst *inst);
 void convert_labels_to_args(t_asm *asemb, t_lst *inst);
 
 void file_put_numb(int fd, int val, int byts);
 void file_put_exec_code(t_lst *inst, int fd);
+int free_asm(t_asm *asemb, int ret);
 
 #endif

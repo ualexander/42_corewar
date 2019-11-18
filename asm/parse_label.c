@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 18:20:14 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/05 18:28:02 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/18 20:14:30 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,15 +33,16 @@ int parse_label(t_asm *asemb, char *line)
 	skip_space(&line);
 	char_i = ft_get_char_i(line, LABEL_CHAR);
 	if ((label_name = ft_strsub(line, 0, char_i)) == NULL)
-		put_error(asemb); // system error
+		put_error(asemb, 0, line); // system error
 	if ((label = label_new(label_name)) == NULL)
-		put_error(asemb); // system error // free label_name
+		put_error(asemb, ft_str_free(&label_name, 0), line); // system error // free label_name
 	ft_lst_push_back_data(&(asemb->labels_queue), (void*)label);
 	line = &(line[char_i + 1]);
 	skip_space(&line);
 	if (line[0] != '\0' && is_instruclion(line))
 		return (parse_instruction(asemb, line));
 	if (line[0] != '\0' && is_comment_char(line[0]) == 0)
-		put_error(asemb); // wrong symbol after label
+		put_error(asemb, 1, line); // Syntax error
 	return (0);
 }
+

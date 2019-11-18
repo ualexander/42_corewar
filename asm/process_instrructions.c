@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/10 17:07:53 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/10 18:20:12 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/18 18:54:53 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void convert_labels_to_args(t_asm *asemb, t_lst *inst)
 				label =
 					find_label(asemb->labels, INST(inst)->args[arg_i].larg);
 				if (label == NULL)
-					put_error(asemb); // label not find
+					put_error(asemb, 4, INST(inst)->args[arg_i].larg); // label not find
 				INST(inst)->args[arg_i].arg =
 					label->inst->bit_pos - INST(inst)->bit_pos;
 			}
@@ -59,7 +59,7 @@ static int get_arg_size(unsigned char args_codes, t_arg arg, t_op *op)
 	return (0);
 }
 
-void set_instruction_size(t_asm *asemb, t_lst *inst)
+void set_instructions_size(t_asm *asemb, t_lst *inst)
 {
 	int arg_i;
 	unsigned int cur_bit_pos;

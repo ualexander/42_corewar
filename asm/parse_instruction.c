@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 18:20:08 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/10 17:37:58 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/18 20:16:07 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ static char *set_op(t_asm *asemb, t_inst *inst, char *line)
 	line = &(line[ft_strlen(inst->op->name)]);
 	if (line[0] != DIRECT_CHAR &&
 		ft_in_line_symbols_only(line, 1, SPACE_CHARS) == 0)
-		put_error(asemb); // not valid token
+		put_error(asemb, 1, line); // Lexical error
 	return (&(line[ft_skip_chars_i(line, SPACE_CHARS)]));
 }
 
@@ -42,10 +42,17 @@ static char *set_arg(t_asm *asemb, t_inst *inst, int arg_i, char *line)
 
 	arg_type = get_arg_type(line);
 	if ((arg_type & inst->op->args_types[arg_i]) == 0)
-		put_error(asemb); // not valid token
+		put_error(asemb, 1, line); // Invalid type of parameter
 	inst->args_codes = modif_arg_codes(inst->args_codes,
 		arg_type, inst->args[arg_i].bit_move);
-	if (arg_type == T_REG || arg_type == T_DIR)
+	if (arg_type == T_REG)
+	{
+		line = set_val_numb(asemb, &(inst->args[arg_i].arg), &line[1]);
+		if (inst->args[arg_i].arg > MAX_REG)
+			put_error(asemb, 1, line); // Syntax error (BIG REG)
+		return (line);
+	}
+	if (arg_type == T_DIR)
 		return (set_val_numb(asemb, &(inst->args[arg_i].arg), &line[1]));
 	if (arg_type == T_IND)
 		return (set_val_numb(asemb, &(inst->args[arg_i].arg), line));
@@ -72,8 +79,10 @@ int parse_instruction(t_asm *asemb, char *line)
 	t_inst *inst;
 	int arg_i;
 
+	if (asemb->gnl != IS_NEW_LINE)
+		put_error(asemb, 2, line); // Lexical error - you forgot to end with a newline
 	if ((inst = instruction_new(asemb->row)) == NULL)
-		put_error(asemb); // system error
+		put_error(asemb, 1, line); // system error
 	arg_i = 0;
 	skip_space(&line);
 	line = set_op(asemb, inst, line);
@@ -83,12 +92,12 @@ int parse_instruction(t_asm *asemb, char *line)
 		line = set_arg(asemb, inst, arg_i, line);
 		if (arg_i < (inst->op->args_num - 1) &&
 			skip_space_and_sep(&line) == 0)
-			put_error(asemb); // wrong separatop
+			put_error(asemb, 1, line); // Lexical error
 		arg_i++;
 	}
 	skip_space(&line);
 	if (line[0] != '\0' && is_comment_char(line[0]) == 0)
-		put_error(asemb); // wrong symbol after label
+		put_error(asemb, 1, line); // Syntax error
 	connect_with_labels(asemb, inst);
 	ft_lst_push_back_data(&(asemb->insts), (void*)inst);
 	return (0);
