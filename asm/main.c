@@ -6,11 +6,49 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 17:02:54 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/20 16:30:47 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/20 20:06:02 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "asm.h"
+
+static int		free_insts(t_lst **inst, int ret)
+{
+	t_lst *cur_inst;
+
+	while ((cur_inst = ft_lst_pop_front(inst)))
+	{
+		ft_str_free(&(INST(cur_inst)->args[0].larg), 0);
+		ft_str_free(&(INST(cur_inst)->args[1].larg), 0);
+		ft_str_free(&(INST(cur_inst)->args[2].larg), 0);
+		free(cur_inst->data);
+		free(cur_inst);
+	}
+	return (ret);
+}
+
+static int		free_labels(t_lst **label, int ret)
+{
+	t_lst *cur_label;
+
+	while ((cur_label = ft_lst_pop_front(label)))
+	{
+		free((LABEL(cur_label)->name));
+		free(cur_label->data);
+		free(cur_label);
+	}
+	return (ret);
+}
+
+int		free_asm(t_asm *asemb, int ret)
+{
+	free_insts(&(asemb->insts), 0);
+	free_labels(&(asemb->labels), 0);
+	free_labels(&(asemb->labels_queue), 0);
+	ft_str_free(&(asemb->parse_line), 0);
+	free(asemb);
+	return (ret);
+}
 
 t_asm	*init_asemb(void)
 {
@@ -75,13 +113,11 @@ int main(int ac, char **av)
 	// re = re | (IND_CODE << 6);
 	// printf("|%u|\n", re);
 
-	int ffd = open("0rere", O_RDWR);
+	int ffd = open("04rere", O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	
+	// printf("--|%i|\n", ffd);
 
-
-
-
-	printf("exec_code_size = %i\n", asemb->exec_code_size);
+	ft_printf("exec_code_size = %i\n", asemb->exec_code_size);
 
 	file_put_numb(ffd, asemb->magic, 4);
 	write(ffd, &(asemb->name), 128);

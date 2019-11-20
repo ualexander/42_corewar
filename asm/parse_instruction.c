@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 18:20:08 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/20 18:16:34 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/20 19:37:03 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,30 +65,11 @@ static char		*set_arg(t_asm *asemb, t_inst *inst, int arg_i, char *line)
 	return (NULL);
 }
 
-static void		connect_with_labels(t_asm *asemb, t_inst *inst)
+static char		*set_args(t_asm *asemb, t_inst *inst, char *line)
 {
-	t_lst *cur_label;
-
-	while ((cur_label = ft_lst_pop_front(&(asemb->labels_queue))))
-	{
-		LABEL(cur_label)->inst = inst;
-		ft_lst_push_back(&(asemb->labels), cur_label);
-	}
-}
-
-int				parse_instruction(t_asm *asemb, char *line)
-{
-	t_inst	*inst;
 	int		arg_i;
 
-	if (asemb->gnl != IS_NEW_LINE)
-		put_error(asemb, ERR_LEX_NL, 0, 0);
-	if ((inst = instruction_new(asemb->row)) == NULL)
-		put_error(asemb, 0, 0, 0);
 	arg_i = 0;
-	skip_space(&line);
-	line = set_op(asemb, inst, line);
-	skip_space(&line);
 	while (arg_i < inst->op->args_num)
 	{
 		line = set_arg(asemb, inst, arg_i, line);
@@ -98,6 +79,21 @@ int				parse_instruction(t_asm *asemb, char *line)
 				(int)(line - asemb->parse_line + 1));
 		arg_i++;
 	}
+	return (line);
+}
+
+int				parse_instruction(t_asm *asemb, char *line)
+{
+	t_inst	*inst;
+
+	if (asemb->gnl != IS_NEW_LINE)
+		put_error(asemb, ERR_LEX_NL, 0, 0);
+	if ((inst = instruction_new(asemb->row)) == NULL)
+		put_error(asemb, 0, 0, 0);
+	skip_space(&line);
+	line = set_op(asemb, inst, line);
+	skip_space(&line);
+	line = set_args(asemb, inst, line);
 	skip_space(&line);
 	if (line[0] != '\0' && is_comment_char(line[0]) == 0)
 		put_error(asemb, ERR_SYNTX, asemb->row,

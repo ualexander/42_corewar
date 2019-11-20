@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/19 17:56:13 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/20 18:15:26 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/20 19:35:30 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,6 +115,7 @@ unsigned char modif_arg_codes(unsigned char last_codes,
 
 int parse_instruction(t_asm *asemb, char *line);
 int parse_label(t_asm *asemb, char *line);
+void	connect_with_labels(t_asm *asemb, t_inst *inst);
 void parse_file(t_asm *asemb);
 
 int skip_space(char **line);

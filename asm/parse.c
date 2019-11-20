@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/29 17:58:42 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/20 18:49:06 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/20 18:50:18 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	parse_file(t_asm *asemb)
 	typ = 0;
 	while ((asemb->gnl = get_next_line(asemb->fd, &(asemb->parse_line))) > 0)
 	{
-		printf("------ |%s|\n", asemb->parse_line);
+		// printf("------ |%s|\n", asemb->parse_line);
 		asemb->row++;
 		typ = typ == 0 ?
 			get_line_type(asemb, asemb->parse_line) : typ;

@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 18:20:14 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/20 18:02:59 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/20 19:34:49 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,17 @@ static t_label	*label_new(char *name)
 	new->name = name;
 	new->inst = NULL;
 	return (new);
+}
+
+void			connect_with_labels(t_asm *asemb, t_inst *inst)
+{
+	t_lst *cur_label;
+
+	while ((cur_label = ft_lst_pop_front(&(asemb->labels_queue))))
+	{
+		LABEL(cur_label)->inst = inst;
+		ft_lst_push_back(&(asemb->labels), cur_label);
+	}
 }
 
 int				parse_label(t_asm *asemb, char *line)

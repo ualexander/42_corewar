@@ -1,3 +1,3 @@
 gcc -g *.c ./libft/libft.a ./printf/libftprintf.a -I ./libft/includes/ -I ./printf/includes/ -I includes/ -I ../includes/ -o 0test
-valgrind --leak-check=full ./0test 0asm_test
+
 ./0test 0asm_test

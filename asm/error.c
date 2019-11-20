@@ -6,49 +6,11 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 15:48:00 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/20 18:48:19 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/20 19:37:18 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "asm.h"
-
-int		free_insts(t_lst **inst, int ret)
-{
-	t_lst *cur_inst;
-
-	while ((cur_inst = ft_lst_pop_front(inst)))
-	{
-		ft_str_free(&(INST(cur_inst)->args[0].larg), 0);
-		ft_str_free(&(INST(cur_inst)->args[1].larg), 0);
-		ft_str_free(&(INST(cur_inst)->args[2].larg), 0);
-		free(cur_inst->data);
-		free(cur_inst);
-	}
-	return (ret);
-}
-
-int		free_labels(t_lst **label, int ret)
-{
-	t_lst *cur_label;
-
-	while ((cur_label = ft_lst_pop_front(label)))
-	{
-		free((LABEL(cur_label)->name));
-		free(cur_label->data);
-		free(cur_label);
-	}
-	return (ret);
-}
-
-int		free_asm(t_asm *asemb, int ret)
-{
-	free_insts(&(asemb->insts), 0);
-	free_labels(&(asemb->labels), 0);
-	free_labels(&(asemb->labels_queue), 0);
-	ft_str_free(&(asemb->parse_line), 0);
-	free(asemb);
-	return (ret);
-}
 
 void	put_error(t_asm *asemb, int err_n, int row, int col)
 {
