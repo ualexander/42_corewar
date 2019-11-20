@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/19 17:56:13 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/18 20:11:24 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/20 18:15:26 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,6 @@
 #ifndef ASM_H
 # define ASM_H
 
-# define A_REG_SIZE 1
-# define A_ARGS_SIZE 1
-# define A_IND_SIZE 2
-
-# define LABEL(L) ((t_label*)(L->data))
-# define INST(L) ((t_inst*)(L->data))
-
 #define EMPTY_LINE 10
 #define COMMENT_LINE 20
 #define CMD_NAME_START 30
@@ -34,16 +27,28 @@
 #define IS_LABEL 50
 #define IS_INSTRUCTION 60
 
+#define IS_NEW_LINE 1
+#define MAX_REG 99
+
+#define ERR_LEX 1
+#define ERR_LEX_NL 2
+#define ERR_SYNTX 3
+#define ERR_INVALID_PARAM 4
+#define ERR_LONG_NAME 5
+#define ERR_LONG_COM 6
+
+# define A_REG_SIZE 1
+# define A_ARGS_SIZE 1
+# define A_IND_SIZE 2
+
 #define COMMENT_CHAR_ALT		';'
 #define BRACKET_CHAR '"'
 #define SPACE_CHARS " \t"
 #define REG_CHAR 'r'
 #define CMD_NUMBERS 16
 
-#define IS_NEW_LINE 1
-#define MAX_REG 99
-
-
+# define LABEL(L) ((t_label*)(L->data))
+# define INST(I) ((t_inst*)(I->data))
 
 typedef struct		s_arg
 {
@@ -60,7 +65,7 @@ typedef struct		s_inst
 	unsigned char	args_codes;
 	unsigned int	bit_size;
 	unsigned int	bit_pos;
-	unsigned int	row;
+	int	row;
 }					t_inst;
 
 typedef struct		s_label
@@ -78,55 +83,25 @@ typedef struct		s_asm
 	unsigned int	row;
  	unsigned int	magic;
 	unsigned int	exec_code_size;
- 	char			prog_name[PROG_NAME_LENGTH + 1];
+ 	char			name[PROG_NAME_LENGTH + 1];
+	int				name_set;
  	char			comment[COMMENT_LENGTH + 1];
+	int				comment_set;
 	t_lst			*labels;
 	t_lst			*labels_queue;
 	t_lst			*insts;
 }					t_asm;
 
 
-/*
-
-typedef enum
-{
-	COMMAND,
-	STRING,
-	LABEL,
-	OPERATOR,
-	REGISTER,
-	DIRECT,
-	DIRECT_LABEL,
-	INDIRECT,
-	INDIRECT_LABEL,
-	SEPARATOR,
-	NEW_LINE,
-	END
-}	t_type;
-
-static char				*g_type[] = {
-	"COMMAND",
-	"STRING",
-	"LABEL",
-	"OPERATOR",
-	"REGISTER",
-	"DIRECT",
-	"DIRECT_LABEL",
-	"INDIRECT",
-	"INDIRECT_LABEL",
-	"SEPARATOR",
-	"NEW_LINE",
-	"END"
-};
-*/
-
-void put_error(t_asm *asemb, int err_n, char *line);
+void put_error_label(t_asm *asemb, int row, char *label);
+void put_error(t_asm *asemb, int err_n, int row, int col);
+void put_error_inst(t_asm *asemb, int row, int arg_i, char *op_name);
 
 int is_command(char *line, char *command);
 int is_label(char *line);
 int is_instruclion(char *line);
 int is_comment_char(char c);
-int get_line_type(char *line);
+int get_line_type(t_asm *asemb, char *line);
 
 int parse_command_name(t_asm *asemb, int line_type);
 int parse_command_comment(t_asm *asemb, int line_type);

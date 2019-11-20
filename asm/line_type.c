@@ -6,13 +6,13 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/26 16:28:42 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/18 16:44:33 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/20 17:55:14 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "asm.h"
+#include "asm.h"
 
-int is_command(char *line, char *command)
+int	is_command(char *line, char *command)
 {
 	int cmd_len;
 	int space_after;
@@ -26,10 +26,10 @@ int is_command(char *line, char *command)
 	return (1);
 }
 
-int is_label(char *line)
+int	is_label(char *line)
 {
 	int label_char_i;
-	
+
 	if ((label_char_i = ft_get_char_i(line, LABEL_CHAR)) == -1 ||
 		label_char_i == 0)
 		return (0);
@@ -37,32 +37,32 @@ int is_label(char *line)
 		label_char_i : 0);
 }
 
-int is_instruclion(char *line)
+int	is_instruclion(char *line)
 {
 	return (get_instruction_i_in_op(line) == -1 ? 0 : 1);
 }
 
-int is_comment_char(char c)
+int	is_comment_char(char c)
 {
 	if (c == COMMENT_CHAR || c == COMMENT_CHAR_ALT)
 		return (1);
 	return (0);
 }
 
-int get_line_type(char *line)
+int	get_line_type(t_asm *asemb, char *line)
 {
 	skip_space(&line);
 	if (line[0] == '\0')
 		return (EMPTY_LINE);
 	if (is_comment_char(line[0]))
 		return (COMMENT_LINE);
-	if (is_command(line, NAME_CMD_STRING))
+	if (is_command(line, NAME_CMD_STRING) && asemb->name_set == 0)
 		return (CMD_NAME_START);
-	if (is_command(line, COMMENT_CMD_STRING))
+	if (is_command(line, COMMENT_CMD_STRING) && asemb->comment_set == 0)
 		return (CMD_COMMENT_START);
-	if (is_label(line))
+	if (is_label(line) && asemb->name_set && asemb->comment_set)
 		return (IS_LABEL);
-	if (is_instruclion(line))
+	if (is_instruclion(line) && asemb->name_set && asemb->comment_set)
 		return (IS_INSTRUCTION);
 	return (0);
 }

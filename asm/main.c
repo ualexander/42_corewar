@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 17:02:54 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/18 17:33:13 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/20 16:30:47 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,10 @@ t_asm	*init_asemb(void)
 	asemb->row = 0;
 	asemb->magic = COREWAR_EXEC_MAGIC;
 	asemb->exec_code_size = 0;
-	ft_bzero((void*)asemb->prog_name, PROG_NAME_LENGTH + 1);
+	ft_bzero((void*)asemb->name, PROG_NAME_LENGTH + 1);
+	asemb->name_set = 0;
 	ft_bzero((void*)asemb->comment, COMMENT_LENGTH + 1);
+	asemb->comment_set = 0;
 	asemb->labels = NULL;
 	asemb->labels_queue = NULL;
 	asemb->insts = NULL;
@@ -55,6 +57,9 @@ int main(int ac, char **av)
 
 	parse_file(asemb);
 
+	if (asemb->insts == NULL)
+		put_error(asemb, ERR_SYNTX, asemb->row + 1, 1);
+
 	set_instructions_size(asemb, asemb->insts);
 	convert_labels_to_args(asemb, asemb->insts);
 	
@@ -79,7 +84,7 @@ int main(int ac, char **av)
 	printf("exec_code_size = %i\n", asemb->exec_code_size);
 
 	file_put_numb(ffd, asemb->magic, 4);
-	write(ffd, &(asemb->prog_name), 128);
+	write(ffd, &(asemb->name), 128);
 	file_put_numb(ffd, 0, 4);
 	file_put_numb(ffd, asemb->exec_code_size, 4);
 	write(ffd, &(asemb->comment), 2048);
@@ -87,8 +92,9 @@ int main(int ac, char **av)
 
 	file_put_exec_code(asemb->insts, ffd);
 	
-
+	printf("%i|%i\n", asemb->comment_set, asemb->name_set);
 	free_asm(asemb, 0);
+
 	
 
 

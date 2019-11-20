@@ -6,11 +6,11 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/30 15:21:23 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/18 16:46:29 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/20 17:57:43 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "asm.h"
+#include "asm.h"
 
 /*
 ** arg in_procces
@@ -20,7 +20,8 @@
 ** if done return 0 else return 1
 ** if error return -1
 */
-static int set_line_command(char *srs, char *dest, int in_procces, int max_len)
+
+static int	set_line_command(char *srs, char *dest, int in_procces, int max_len)
 {
 	int		start;
 	int		len;
@@ -49,7 +50,7 @@ static int set_line_command(char *srs, char *dest, int in_procces, int max_len)
 	return (ft_str_free(&tmp, in_procces));
 }
 
-static int command_end_i(char *line)
+static int	command_end_i(char *line)
 {
 	int bracket_f;
 	int bracket_s;
@@ -62,34 +63,36 @@ static int command_end_i(char *line)
 	return (end);
 }
 
-int parse_command_name(t_asm *asemb, int line_type)
+int			parse_command_name(t_asm *asemb, int line_type)
 {
 	int last;
 
-	line_type = set_line_command(asemb->parse_line, asemb->prog_name,
+	asemb->name_set = 1;
+	line_type = set_line_command(asemb->parse_line, asemb->name,
 				line_type == CMD_NAME_START ? 0 : 1, PROG_NAME_LENGTH);
 	if (line_type == -1)
-		printf("ERROR NAME LEN\n");
+		put_error(asemb, ERR_LONG_NAME, 0, 0);
 	last = command_end_i(asemb->parse_line);
 	if (line_type == 0 && (asemb->parse_line[last] != '\0' &&
 		asemb->parse_line[last] != COMMENT_CHAR &&
 		asemb->parse_line[last] != COMMENT_CHAR_ALT))
-		printf("UNDEF COMAND - %s\n", &(asemb->parse_line[last]));
+		put_error(asemb, ERR_SYNTX, asemb->row, last + 1);
 	return (line_type == 0 ? 0 : CMD_NAME_PROCCES);
 }
 
-int parse_command_comment(t_asm *asemb, int line_type)
+int			parse_command_comment(t_asm *asemb, int line_type)
 {
 	int last;
 
+	asemb->comment_set = 1;
 	line_type = set_line_command(asemb->parse_line, asemb->comment,
 		line_type == CMD_COMMENT_START ? 0 : 1, COMMENT_LENGTH);
 	if (line_type == -1)
-		printf("ERROR NAME LEN\n");
+		put_error(asemb, ERR_LONG_COM, 0, 0);
 	last = command_end_i(asemb->parse_line);
 	if (line_type == 0 && (asemb->parse_line[last] != '\0' &&
 		asemb->parse_line[last] != COMMENT_CHAR &&
 		asemb->parse_line[last] != COMMENT_CHAR_ALT))
-		printf("UNDEF COMAND - %s\n", &(asemb->parse_line[last]));
+		put_error(asemb, ERR_SYNTX, asemb->row, last + 1);
 	return (line_type == 0 ? 0 : CMD_COMMENT_PROCCES);
 }

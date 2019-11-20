@@ -6,15 +6,16 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 18:20:14 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/18 20:14:30 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/20 18:02:59 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "asm.h"
+#include "asm.h"
 
-static t_label *label_new(char *name)
+static t_label	*label_new(char *name)
 {
 	t_label *new;
+
 	if (name == NULL)
 		return (NULL);
 	if ((new = (t_label*)malloc(sizeof(t_label))) == NULL)
@@ -24,25 +25,25 @@ static t_label *label_new(char *name)
 	return (new);
 }
 
-int parse_label(t_asm *asemb, char *line)
+int				parse_label(t_asm *asemb, char *line)
 {
-	t_label *label;
+	t_label	*label;
 	char	*label_name;
 	int		char_i;
 
 	skip_space(&line);
 	char_i = ft_get_char_i(line, LABEL_CHAR);
 	if ((label_name = ft_strsub(line, 0, char_i)) == NULL)
-		put_error(asemb, 0, line); // system error
+		put_error(asemb, 0, 0, 0);
 	if ((label = label_new(label_name)) == NULL)
-		put_error(asemb, ft_str_free(&label_name, 0), line); // system error // free label_name
+		put_error(asemb, 0, ft_str_free(&label_name, 0), 0);
 	ft_lst_push_back_data(&(asemb->labels_queue), (void*)label);
 	line = &(line[char_i + 1]);
 	skip_space(&line);
 	if (line[0] != '\0' && is_instruclion(line))
 		return (parse_instruction(asemb, line));
 	if (line[0] != '\0' && is_comment_char(line[0]) == 0)
-		put_error(asemb, 1, line); // Syntax error
+		put_error(asemb, ERR_SYNTX, asemb->row,
+			(int)(line - asemb->parse_line + 1));
 	return (0);
 }
-

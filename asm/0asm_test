@@ -1,16 +1,14 @@
+.name           "42"
 .comment        "Just a basic Winner Program"
-.name          "42"    
-#ewrfd
-
 
 entree:	live	%42		# entree
-	ld -456454    ,  r5
-	ld	0,   r5
-	zjmp %:bite
+	ld	%0,r5
+	ld	%0,r5
+	zjmp	%:bite
 
-tir:	sti	r1,:tirb,%1
+tir:	sti	r1,%:tirb,%1
 	ld	%2304,r10
-	ld	%1, r5
+	ld	%1,r5
 	ld	%0,r11
 
 	ld	%4,r3
@@ -230,14 +228,5 @@ tirdow:	ld	%425,r2
 	ld	%4,r4
 
 tird:	live	%42
-	sti	r10,%:fin,r2
-	sti	r10,%:fin,r3
-	add	r4,r5,r4
-	add	r3,r4,r3
-	sub	r2,r4,r2
-	zjmp	%:tirdow
-	ld	%0,r11
-	zjmp	%:tird
-	zjmp	%:p1
-
-fin:	live	%633
+	sti	r10,         %:fin ,
+	

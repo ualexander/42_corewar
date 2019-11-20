@@ -6,13 +6,13 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 18:23:06 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/18 20:11:50 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/20 18:01:06 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "asm.h"
+#include "asm.h"
 
-int get_instruction_i_in_op(char *instruction)
+int				get_instruction_i_in_op(char *instruction)
 {
 	int i;
 	int result_i;
@@ -31,7 +31,7 @@ int get_instruction_i_in_op(char *instruction)
 	return (result_i);
 }
 
-int get_arg_type(char *args)
+int				get_arg_type(char *args)
 {
 	if (args[0] && args[0] == REG_CHAR)
 		return (T_REG);
@@ -48,18 +48,19 @@ int get_arg_type(char *args)
 	return (0);
 }
 
-char	*set_val_numb(t_asm *asemb, int *set_numb, char *line)
+char			*set_val_numb(t_asm *asemb, int *set_numb, char *line)
 {
-	unsigned long int num;
-	int	i;
-	int overflow;
+	unsigned long int	num;
+	int					i;
+	int					overflow;
 
 	num = 0;
 	i = line[0] == '-' ? 1 : 0;
 	overflow = 0;
 	if ((line[0] == '-' && ft_isdigit(line[1]) == 0) ||
 		(line[0] != '-' && ft_isdigit(line[0]) == 0))
-		put_error(asemb, 1, line); // Lexical error
+		put_error(asemb, ERR_LEX, asemb->row,
+			(int)(line - asemb->parse_line + 1));
 	while (ft_isdigit(line[i]))
 	{
 		num = num * 10 + line[i] - '0';
@@ -76,7 +77,7 @@ char	*set_val_numb(t_asm *asemb, int *set_numb, char *line)
 	return (&line[i]);
 }
 
-char	*set_val_str(t_asm *asemb, char **set_str, char *line)
+char			*set_val_str(t_asm *asemb, char **set_str, char *line)
 {
 	int len;
 
@@ -84,13 +85,13 @@ char	*set_val_str(t_asm *asemb, char **set_str, char *line)
 	while (line[len] && ft_strchr(LABEL_CHARS, line[len]))
 		len++;
 	if (len == 0)
-		put_error(asemb, 1, line); // Lexical error
+		put_error(asemb, ERR_LEX, asemb->row, (int)(line - asemb->parse_line));
 	if ((*set_str = ft_strsub(line, 0, len)) == NULL)
-		put_error(asemb, 1, line); // system error
+		put_error(asemb, 0, 0, 0);
 	return (&line[len]);
 }
 
-unsigned char modif_arg_codes(unsigned char last_codes,
+unsigned char	modif_arg_codes(unsigned char last_codes,
 	int arg_type, int bit_move)
 {
 	if (arg_type & T_REG)

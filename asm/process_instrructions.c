@@ -6,13 +6,13 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/10 17:07:53 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/18 18:54:53 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/20 18:05:12 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "asm.h"
+#include "asm.h"
 
-static t_label *find_label(t_lst *labels, char *name)
+static t_label	*find_label(t_lst *labels, char *name)
 {
 	while (labels)
 	{
@@ -23,11 +23,11 @@ static t_label *find_label(t_lst *labels, char *name)
 	return (NULL);
 }
 
-void convert_labels_to_args(t_asm *asemb, t_lst *inst)
+void			convert_labels_to_args(t_asm *asemb, t_lst *inst)
 {
-	int arg_i;
+	int		arg_i;
+	t_label	*label;
 
-	t_label *label;
 	while (inst)
 	{
 		arg_i = 0;
@@ -38,7 +38,8 @@ void convert_labels_to_args(t_asm *asemb, t_lst *inst)
 				label =
 					find_label(asemb->labels, INST(inst)->args[arg_i].larg);
 				if (label == NULL)
-					put_error(asemb, 4, INST(inst)->args[arg_i].larg); // label not find
+					put_error_label(asemb, INST(inst)->row,
+						INST(inst)->args[arg_i].larg);
 				INST(inst)->args[arg_i].arg =
 					label->inst->bit_pos - INST(inst)->bit_pos;
 			}
@@ -48,7 +49,7 @@ void convert_labels_to_args(t_asm *asemb, t_lst *inst)
 	}
 }
 
-static int get_arg_size(unsigned char args_codes, t_arg arg, t_op *op)
+static int		get_arg_size(unsigned char args_codes, t_arg arg, t_op *op)
 {
 	if (((args_codes >> arg.bit_move) & IND_CODE) == IND_CODE)
 		return (A_IND_SIZE);
@@ -59,10 +60,10 @@ static int get_arg_size(unsigned char args_codes, t_arg arg, t_op *op)
 	return (0);
 }
 
-void set_instructions_size(t_asm *asemb, t_lst *inst)
+void			set_instructions_size(t_asm *asemb, t_lst *inst)
 {
-	int arg_i;
-	unsigned int cur_bit_pos;
+	int				arg_i;
+	unsigned int	cur_bit_pos;
 
 	cur_bit_pos = 0;
 	while (inst)
