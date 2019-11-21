@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 15:48:00 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/20 19:37:18 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/21 19:49:50 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,18 +28,31 @@ void	put_error(t_asm *asemb, int err_n, int row, int col)
 			" (Max length %u)\n", COMMENT_LENGTH);
 	else
 		ft_printf("System error - %i\n", err_n);
-	exit(free_asm(asemb, err_n));
+	exit(free_asemb(asemb, err_n));
 }
 
 void	put_error_inst(t_asm *asemb, int row, int arg_i, char *op_name)
 {
 	ft_printf("Invalid parameter %i type indirect"\
 		" for instruction \"%s\" in line %i\n", arg_i, op_name, row);
-	exit(free_asm(asemb, ERR_INVALID_PARAM));
+	exit(free_asemb(asemb, ERR_INVALID_PARAM));
 }
 
 void	put_error_label(t_asm *asemb, int row, char *label)
 {
 	ft_printf("Undeclared label \"%s\" in line %i\n", label, row);
-	exit(free_asm(asemb, 6));
+	exit(free_asemb(asemb, 6));
+}
+
+void	put_error_file(t_asm *asemb, int err_n, char *file_name)
+{
+	if (err_n == ERR_NUMB_ARG)
+		ft_printf("incorrect number of arguments - expected \"1\" arg\n");
+	else if (err_n == ERR_READ_FILE)
+		ft_printf("Can't read input file \"%s\"\n", file_name);
+	else if (err_n == ERR_FILE_NAME)
+		ft_printf("Invalid input file name - use \"exemple.s\"\n");
+	else if (err_n == ERR_CREATE_FILE)
+		ft_printf("Can't create output file\n");
+	exit(free_asemb(asemb, 6));
 }

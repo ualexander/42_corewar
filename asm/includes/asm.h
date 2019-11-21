@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/19 17:56:13 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/20 19:35:30 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/21 19:25:22 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,9 @@
 
 #ifndef ASM_H
 # define ASM_H
+
+#define INPUT_FILE_EXT ".s"
+#define OUTPUT_FILE_EXT ".cor"
 
 #define EMPTY_LINE 10
 #define COMMENT_LINE 20
@@ -36,6 +39,10 @@
 #define ERR_INVALID_PARAM 4
 #define ERR_LONG_NAME 5
 #define ERR_LONG_COM 6
+#define ERR_NUMB_ARG 7
+#define ERR_READ_FILE 8
+#define ERR_FILE_NAME 9
+#define ERR_CREATE_FILE 10
 
 # define A_REG_SIZE 1
 # define A_ARGS_SIZE 1
@@ -79,6 +86,7 @@ typedef struct		s_asm
 {
 	int				fd;
 	int				gnl;
+	char			*file_name;
 	char			*parse_line;
 	unsigned int	row;
  	unsigned int	magic;
@@ -96,6 +104,7 @@ typedef struct		s_asm
 void put_error_label(t_asm *asemb, int row, char *label);
 void put_error(t_asm *asemb, int err_n, int row, int col);
 void put_error_inst(t_asm *asemb, int row, int arg_i, char *op_name);
+void	put_error_file(t_asm *asemb, int err_n, char *file_name);
 
 int is_command(char *line, char *command);
 int is_label(char *line);
@@ -124,8 +133,9 @@ int skip_space_and_sep(char **line);
 void set_instructions_size(t_asm *asemb, t_lst *inst);
 void convert_labels_to_args(t_asm *asemb, t_lst *inst);
 
-void file_put_numb(int fd, int val, int byts);
-void file_put_exec_code(t_lst *inst, int fd);
-int free_asm(t_asm *asemb, int ret);
+
+void open_input_file(t_asm *asemb, int ac, char **av);
+void write_output_file(t_asm *asemb, char *ext);
+int free_asemb(t_asm *asemb, int ret);
 
 #endif
