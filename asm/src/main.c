@@ -6,11 +6,11 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 17:02:54 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/21 19:27:15 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/21 19:58:36 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "asm.h"
+#include "asm.h"
 
 static int		free_insts(t_lst **inst, int ret)
 {
@@ -40,7 +40,7 @@ static int		free_labels(t_lst **label, int ret)
 	return (ret);
 }
 
-int		free_asemb(t_asm *asemb, int ret)
+int				free_asemb(t_asm *asemb, int ret)
 {
 	if (asemb)
 	{
@@ -59,7 +59,7 @@ static t_asm	*init_asemb(void)
 	t_asm *new;
 
 	if ((new = (t_asm*)malloc(sizeof(t_asm))) == NULL)
-		return NULL;
+		return (NULL);
 	ft_bzero((void*)new, sizeof(t_asm));
 	new->fd = -1;
 	new->gnl = -1;
@@ -67,7 +67,7 @@ static t_asm	*init_asemb(void)
 	return (new);
 }
 
-int main(int ac, char **av)
+int				main(int ac, char **av)
 {
 	t_asm *asemb;
 

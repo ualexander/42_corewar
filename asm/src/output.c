@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/10 16:57:48 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/21 19:50:33 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/21 19:57:30 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ static void	file_put_exec_code(int fd, t_lst *inst)
 	}
 }
 
-void write_output_file(t_asm *asemb, char *ext)
+void		write_output_file(t_asm *asemb, char *ext)
 {
 	char *output_file_name;
 

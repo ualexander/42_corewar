@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/21 19:46:48 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/21 19:49:58 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/21 19:57:09 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 static char	*get_file_name(char *file_name, char *ext)
 {
 	int i;
+
 	i = ft_get_char_i(file_name, '.');
 	if (i == -1 || ft_strlen(file_name) < 3 ||
 		ft_strlen(ext) < 2 || ext[0] != '.')
@@ -24,7 +25,7 @@ static char	*get_file_name(char *file_name, char *ext)
 	return (ft_strsub(file_name, 0, i));
 }
 
-void open_input_file(t_asm *asemb, int ac, char **av)
+void		open_input_file(t_asm *asemb, int ac, char **av)
 {
 	if (ac != 2)
 		put_error_file(asemb, ERR_NUMB_ARG, NULL);
