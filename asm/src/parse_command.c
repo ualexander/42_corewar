@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/30 15:21:23 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/20 17:57:43 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/27 18:45:22 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ static int	set_line_command(char *srs, char *dest, int in_procces, int max_len)
 		start = 0;
 	}
 	if ((tmp = ft_strsub(srs, start, len)) == NULL ||
-		ft_strlen(dest) + len + (in_procces == 1 ? 1 : 0) > max_len)
+		(int)ft_strlen(dest) + len + (in_procces == 1 ? 1 : 0) > max_len)
 		in_procces = -1;
 	else
 		ft_strncpy(&(dest[ft_strlen(dest)]), tmp, len);

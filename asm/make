@@ -1,1 +1,0 @@
-gcc -g src/*.c ./libft/libft.a ./printf/libftprintf.a -I ./libft/includes/ -I ./printf/includes/ -I includes/ -I ../includes/ -o asm
