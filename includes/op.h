@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/29 14:19:00 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/05 16:36:33 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/27 18:46:07 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 # define REG_CODE				1
 # define DIR_CODE				2
 # define IND_CODE				3
-
 
 #define MAX_ARGS_NUMBER			4
 #define MAX_PLAYERS				4
