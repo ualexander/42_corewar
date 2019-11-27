@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 18:20:08 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/20 19:37:03 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/27 17:09:42 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ static char		*set_arg(t_asm *asemb, t_inst *inst, int arg_i, char *line)
 	if (arg_type == T_REG)
 	{
 		line = set_val_numb(asemb, &(inst->args[arg_i].arg), &line[1]);
-		if (inst->args[arg_i].arg > MAX_REG)
+		if (inst->args[arg_i].arg > MAX_REG || inst->args[arg_i].arg < 0)
 			put_error(asemb, ERR_SYNTX, asemb->row, (int)
 			(line - asemb->parse_line - ft_digitcount(inst->args[arg_i].arg)));
 		return (line);

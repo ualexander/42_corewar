@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 18:23:06 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/20 18:01:06 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/27 17:10:59 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int				get_instruction_i_in_op(char *instruction)
 
 int				get_arg_type(char *args)
 {
-	if (args[0] && args[0] == REG_CHAR)
+	if (args[0] && args[1] && args[0] == REG_CHAR && args[1] != '-')
 		return (T_REG);
 	if (args[0] && args[0] == DIRECT_CHAR &&
 		args[1] && args[1] == LABEL_CHAR)
