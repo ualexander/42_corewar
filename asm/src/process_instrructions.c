@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/10 17:07:53 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/21 19:52:42 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/28 17:13:19 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,26 +23,37 @@ static t_label	*find_label(t_lst *labels, char *name)
 	return (NULL);
 }
 
+static void		convert_label_to_arg(t_asm *asemb, t_lst *inst, int arg_i)
+{
+	t_label	*label;
+
+	if (INST(inst)->args[arg_i].larg)
+	{
+		if ((label = find_label(asemb->labels, INST(inst)->args[arg_i].larg)))
+		{
+			INST(inst)->args[arg_i].arg =
+				label->inst->bit_pos - INST(inst)->bit_pos;
+		}
+		else if ((label =
+			find_label(asemb->labels_queue, INST(inst)->args[arg_i].larg)))
+			INST(inst)->args[arg_i].arg =
+				asemb->exec_code_size - INST(inst)->bit_pos;
+		else
+			put_error_label(asemb, INST(inst)->row,
+				INST(inst)->args[arg_i].larg);
+	}
+}
+
 void			convert_labels_to_args(t_asm *asemb, t_lst *inst)
 {
 	int		arg_i;
-	t_label	*label;
 
 	while (inst)
 	{
 		arg_i = 0;
 		while (arg_i < INST(inst)->op->args_num)
 		{
-			if (INST(inst)->args[arg_i].larg)
-			{
-				label =
-					find_label(asemb->labels, INST(inst)->args[arg_i].larg);
-				if (label == NULL)
-					put_error_label(asemb, INST(inst)->row,
-						INST(inst)->args[arg_i].larg);
-				INST(inst)->args[arg_i].arg =
-					label->inst->bit_pos - INST(inst)->bit_pos;
-			}
+			convert_label_to_arg(asemb, inst, arg_i);
 			arg_i++;
 		}
 		inst = inst->next;

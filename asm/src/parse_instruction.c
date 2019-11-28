@@ -6,7 +6,7 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 18:20:08 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/27 17:09:42 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/11/28 17:11:56 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ static char		*set_op(t_asm *asemb, t_inst *inst, char *line)
 {
 	inst->op = &(g_op[get_instruction_i_in_op(line)]);
 	line = &(line[ft_strlen(inst->op->name)]);
-	if (line[0] != DIRECT_CHAR &&
+	if (line[0] != DIRECT_CHAR && line[0] != '-' &&
 		ft_in_line_symbols_only(line, 1, SPACE_CHARS) == 0)
 		put_error(asemb, ERR_LEX, asemb->row,
 			(int)(line - asemb->parse_line + 1));
