@@ -6,15 +6,18 @@
 /*   By: vsanta <vsanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 16:34:02 by vsanta            #+#    #+#             */
-/*   Updated: 2019/11/27 18:46:00 by vsanta           ###   ########.fr       */
+/*   Updated: 2019/12/01 14:50:13 by vsanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#ifndef COREWAR_H
+# define COREWAR_H
+
 # include "op.h"
 
-#define REG_CODE					1
-#define DIR_CODE					2
-#define IND_CODE					3
+# define REG_CODE					1
+# define DIR_CODE					2
+# define IND_CODE					3
 
 typedef struct	s_op
 {
@@ -44,3 +47,5 @@ static t_op		g_op[16] = {
 	{"lfork", 15, 1, 0, {T_DIR, 0, 0}, 2},
 	{"aff", 16, 1, 1, {T_REG, 0, 0}, 4}
 };
+
+#endif
