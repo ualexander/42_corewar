@@ -62,6 +62,6 @@ void		write_output_file(t_asm *asemb, char *ext)
 	file_put_numb(asemb->fd, 0, 4);
 	file_put_exec_code(asemb->fd, asemb->insts);
 	close(asemb->fd);
-	ft_printf("Writing output program to \"%s\"\n", output_file_name);
+	printf("Writing output program to \"%s\"\n", output_file_name);
 	ft_str_free(&output_file_name, 0);
 }

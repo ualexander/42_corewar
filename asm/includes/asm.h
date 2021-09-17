@@ -14,7 +14,6 @@
 # define ASM_H
 
 # include "libft.h"
-# include "ft_printf.h"
 # include "corewar.h"
 # include <limits.h>
 
